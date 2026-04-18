@@ -155,8 +155,8 @@
                           <span style="color: #172b4d; font-size: 13px;">{{ ticket.title }}</span>
                         </div>
                         <span style="font-size: 11px;" 
-                              [style.color]="ticket.message?.toLowerCase()?.includes('hoy') ? '#bf2600' : (ticket.message?.toLowerCase()?.includes('mañana') ? '#ff8b00' : '#6b778c')">
-                          @if (ticket.message?.toLowerCase()?.includes('hoy')) {
+                              [style.color]="ticket.message.toLowerCase().includes('hoy') ? '#bf2600' : (ticket.message.toLowerCase().includes('mañana') ? '#ff8b00' : '#6b778c')">
+                          @if (ticket.message.toLowerCase().includes('hoy')) {
                             <i class="bi bi-exclamation-circle me-1"></i>
                           }
                           {{ ticket.message }}
@@ -255,7 +255,7 @@
                       <span [style]="getJiraPriorityStyle(ticket.priority)">{{ ticket.priority }}</span>
                     </td>
                     <td class="py-3">
-                      <span [style]="getJiraStatusStyle(ticket.status?.name || '')">{{ ticket.status?.name }}</span>
+                      <span [style]="getJiraStatusStyle(ticket.status.name || '')">{{ ticket.status.name }}</span>
                     </td>
                     <td class="py-3">
                       @if (ticket.assigned_to) {
