@@ -1,0 +1,128 @@
+<div class="modal d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header border-bottom px-4 py-3">
+        <h5 class="modal-title fw-bold text-main">{{ editingTicket ? 'Editar Ticket' : 'Crear Nuevo Ticket' }}</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body px-4 py-4 overflow-y-auto" style="max-height: 80vh;">
+        @if (errorMessage) {
+          <div class="alert alert-danger mb-4">{{ errorMessage }}</div>
+        }
+
+        <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+          <!-- Title -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Título del Ticket <span class="text-danger">*</span></label>
+            <input type="text" formControlName="title" class="form-control" 
+                   placeholder="Ej: Error al cargar la página de pagos" [class.is-invalid]="isFieldInvalid('title')">
+            @if (isFieldInvalid('title')) {
+              <div class="invalid-feedback">El título es requerido (mín. 5 caracteres).</div>
+            }
+          </div>
+
+          <!-- Description -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Descripción Detallada <span class="text-danger">*</span></label>
+            <textarea formControlName="description" class="form-control" rows="4" 
+                      placeholder="Describe el problema o la tarea con detalle..." [class.is-invalid]="isFieldInvalid('description')"></textarea>
+            @if (isFieldInvalid('description')) {
+              <div class="invalid-feedback">La descripción es requerida (mín. 10 caracteres).</div>
+            }
+          </div>
+
+          <!-- AI Button -->
+          <div class="mb-4 text-end">
+            <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 d-inline-flex align-items-center" 
+                    (click)="generateWithAi()" [disabled]="isAiGenerating">
+              @if (isAiGenerating) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                Analizando con IA...
+              } @else {
+                <i class="bi bi-robot me-2"></i>
+                Generar con IA
+              }
+            </button>
+          </div>
+
+          <div class="row g-4">
+            <!-- Category -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Categoría <span class="text-danger">*</span></label>
+              <select formControlName="category" class="form-select" [class.is-invalid]="isFieldInvalid('category')">
+                <option value="">Seleccionar...</option>
+                <option value="frontend">Frontend</option>
+                <option value="backend">Backend</option>
+                <option value="design">Diseño</option>
+                <option value="other">Otro</option>
+              </select>
+            </div>
+
+            <!-- Type -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Tipo <span class="text-danger">*</span></label>
+              <select formControlName="type" class="form-select" [class.is-invalid]="isFieldInvalid('type')">
+                <option value="task">Tarea</option>
+                <option value="bug">Error (Bug)</option>
+                <option value="story">Historia</option>
+                <option value="improvement">Mejora</option>
+              </select>
+            </div>
+
+            <!-- Priority -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Prioridad <span class="text-danger">*</span></label>
+              <select formControlName="priority" class="form-select" [class.is-invalid]="isFieldInvalid('priority')">
+                <option value="low">Baja</option>
+                <option value="medium">Media</option>
+                <option value="high">Alta</option>
+                <option value="urgent">Urgente</option>
+              </select>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <!-- Summary (AI Target) -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Resumen <span class="text-danger">*</span></label>
+            <input type="text" formControlName="summary" class="form-control" 
+                   placeholder="Un resumen corto generado por la IA o manualmente" [class.is-invalid]="isFieldInvalid('summary')">
+            @if (isFieldInvalid('summary')) {
+              <div class="invalid-feedback">El resumen es requerido.</div>
+            }
+          </div>
+
+          <!-- Suggested Solution (AI Target) -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Solución Sugerida <span class="text-danger">*</span></label>
+            <textarea formControlName="suggested_solution" class="form-control" rows="3" 
+                      placeholder="¿Cómo se podría solucionar esto?" [class.is-invalid]="isFieldInvalid('suggested_solution')"></textarea>
+            @if (isFieldInvalid('suggested_solution')) {
+              <div class="invalid-feedback">La solución sugerida es requerida.</div>
+            }
+          </div>
+
+          <div class="modal-footer border-top px-0 pb-0 mt-4">
+            <button type="button" class="btn btn-light border px-4 rounded-pill" (click)="closeModal()">Cancelar</button>
+            <button type="submit" class="btn btn-primary px-4 rounded-pill d-flex align-items-center" [disabled]="ticketForm.invalid || isLoading">
+              @if (isLoading) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                Guardando...
+              } @else {
+                Crear Ticket
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.text-main { color: #172B4D; }
+.shadow-xs { box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+.ls-1 { letter-spacing: 0.5px; }
+.smaller { font-size: 12px; }
+</style>

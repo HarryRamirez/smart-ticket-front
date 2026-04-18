@@ -1,0 +1,28 @@
+:host {
+  display: block;
+}
+
+.navbar {
+  height: 56px;
+  background: var(--surface-base);
+}
+
+.dropdown-menu {
+  border-radius: 6px;
+  min-width: 180px;
+  
+  .dropdown-item {
+    color: var(--ink-secondary);
+    font-size: 14px;
+    
+    &:hover {
+      background: var(--surface-muted);
+      color: var(--ink-primary);
+    }
+    
+    &:last-child:hover {
+      background: var(--danger-subtle);
+      color: var(--danger);
+    }
+  }
+}

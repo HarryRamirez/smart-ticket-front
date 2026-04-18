@@ -1,0 +1,55 @@
+<div class="sidebar-wrapper h-100 d-flex flex-column">
+  <!-- Sidebar Header -->
+  <div class="sidebar-header p-3 d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center overflow-hidden" [class.d-none]="isCollapsed()">
+    </div>
+    <button class="btn btn-link text-white p-0" (click)="toggleCollapse()">
+      <i class="bi" [class.bi-chevron-left]="!isCollapsed()" [class.bi-chevron-right]="isCollapsed()"></i>
+    </button>
+  </div>
+
+  <!-- Menu Section -->
+  <div class="sidebar-menu flex-grow-1 overflow-y-auto px-2 pt-3">
+    <div class="menu-label small text-uppercase mb-2 px-3" [class.d-none]="isCollapsed()">Principal</div>
+    <a routerLink="/dashboard" routerLinkActive="active" class="menu-item d-flex align-items-center rounded-2 py-2 px-3 mb-1" 
+       [title]="isCollapsed() ? 'Dashboard' : ''">
+      <i class="bi bi-speedometer2 me-3 fs-5"></i>
+      <span [class.d-none]="isCollapsed()">Dashboard</span>
+    </a>
+    
+    <a routerLink="/projects" routerLinkActive="active" class="menu-item d-flex align-items-center rounded-2 py-2 px-3 mb-1"
+       [title]="isCollapsed() ? 'Proyectos' : ''">
+      <i class="bi bi-folder2 me-3 fs-5"></i>
+      <span [class.d-none]="isCollapsed()">Proyectos</span>
+    </a>
+
+    <!-- Recent Projects Section -->
+    <div class="mt-4 mb-2" [class.d-none]="isCollapsed()">
+      <div class="menu-label small text-uppercase px-3 d-flex justify-content-between align-items-center cursor-pointer" 
+           (click)="toggleRecentProjects()">
+        <span>Proyectos Recientes</span>
+        <i class="bi small" [class.bi-chevron-down]="isRecentProjectsOpen" [class.bi-chevron-right]="!isRecentProjectsOpen"></i>
+      </div>
+      
+      <div class="recent-projects-list mt-2" *ngIf="isRecentProjectsOpen">
+        @for (project of recentProjects; track project.id) {
+          <a [routerLink]="['/projects', project.id]" routerLinkActive="active" 
+             class="menu-item d-flex align-items-center rounded-2 py-1 px-3 mb-1 small ms-2">
+            <span class="badge bg-primary-subtle text-primary fw-bold me-2" style="font-size: 0.65rem; padding: 0.25rem 0.4rem;">
+              {{ project.key }}
+            </span>
+            <span class="text-truncate">{{ project.name }}</span>
+          </a>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Section -->
+  <div class="sidebar-footer p-3 border-top border-primary-subtle">
+    <div class="d-flex align-items-center overflow-hidden" [class.d-none]="isCollapsed()">
+      <i class="bi bi-question-circle me-3"></i>
+      <span class="small text-truncate">Ayuda y Soporte</span>
+    </div>
+  </div>
+</div>

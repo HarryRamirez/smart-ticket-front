@@ -1,0 +1,57 @@
+<div class="auth-wrapper d-flex align-items-center justify-content-center min-vh-100 p-3" style="background: var(--bg-app);">
+  <div class="card border rounded-3 overflow-hidden" style="max-width: 450px; width: 100%;">
+    <div class="card-body p-5">
+      <div class="text-center mb-4">
+        <div class="brand-logo mb-4">
+          <img src="/logo.png" alt="SmartTicket" height="64">
+        </div>
+        <p class="small" style="color: var(--ink-tertiary);">Ingresa tus credenciales para continuar</p>
+      </div>
+
+      @if (errorMessage) {
+        <div class="alert alert-danger d-flex align-items-center small py-2" role="alert" style="background: var(--danger-bg); border: none; color: var(--danger);">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <div>{{ errorMessage }}</div>
+        </div>
+      }
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label class="form-label fw-semibold" style="color: var(--ink-primary);">Usuario</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person"></i></span>
+            <input type="text" formControlName="username" class="form-control" 
+                   placeholder="Tu nombre de usuario" [class.is-invalid]="isFieldInvalid('username')">
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <div class="d-flex justify-content-between">
+            <label class="form-label fw-semibold" style="color: var(--ink-primary);">Contraseña</label>
+            <a href="#" class="text-decoration-none small" style="color: var(--ink-tertiary);">¿Problemas?</a>
+          </div>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+            <input type="password" formControlName="password" class="form-control" 
+                   placeholder="••••••••" [class.is-invalid]="isFieldInvalid('password')">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold mb-3 d-flex align-items-center justify-content-center" 
+                [disabled]="loginForm.invalid || isLoading">
+          @if (isLoading) {
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+            Autenticando...
+          } @else {
+            Iniciar Sesión
+          }
+        </button>
+
+        <div class="text-center mt-4">
+          <span class="small" style="color: var(--ink-tertiary);">¿Nuevo en SmartTicket? </span>
+          <a routerLink="/auth/register" class="fw-semibold small text-decoration-none" style="color: var(--primary);">Crea una cuenta</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

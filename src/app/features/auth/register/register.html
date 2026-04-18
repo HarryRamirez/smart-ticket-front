@@ -1,0 +1,83 @@
+<div class="auth-wrapper d-flex align-items-center justify-content-center bg-light min-vh-100 p-3">
+  <div class="card shadow-lg border-0 rounded-4" style="max-width: 500px; width: 100%;">
+    <div class="card-body p-5">
+      <div class="text-center mb-4">
+        <img src="/logo.png" alt="SmartTicket" height="64">
+        <p class="text-muted small">Únete a SmartTicket para gestionar tus tickets</p>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Nombre de Usuario</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="bi bi-person text-muted"></i></span>
+            <input type="text" formControlName="username" class="form-control border-start-0 ps-0" 
+                   placeholder="usuario123" [class.is-invalid]="isFieldInvalid('username')">
+          </div>
+          @if (isFieldInvalid('username')) {
+            <div class="invalid-feedback d-block">
+              El nombre de usuario es requerido (mín. 3 caracteres).
+            </div>
+          }
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Nombre</label>
+            <input type="text" formControlName="firstName" class="form-control" placeholder="Juan" 
+                   [class.is-invalid]="isFieldInvalid('firstName')">
+          </div>
+          <div class="col-md-6 mt-3 mt-md-0">
+            <label class="form-label fw-semibold">Apellido</label>
+            <input type="text" formControlName="lastName" class="form-control" placeholder="Pérez" 
+                   [class.is-invalid]="isFieldInvalid('lastName')">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Correo Electrónico</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="bi bi-envelope text-muted"></i></span>
+            <input type="email" formControlName="email" class="form-control border-start-0 ps-0" 
+                   placeholder="nombre@ejemplo.com" [class.is-invalid]="isFieldInvalid('email')">
+          </div>
+          @if (isFieldInvalid('email')) {
+            <div class="invalid-feedback d-block">
+              Por favor, ingresa un correo válido.
+            </div>
+          }
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Contraseña</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="bi bi-lock text-muted"></i></span>
+            <input type="password" formControlName="password" class="form-control border-start-0 ps-0" 
+                   placeholder="••••••••" [class.is-invalid]="isFieldInvalid('password')">
+          </div>
+          @if (isFieldInvalid('password')) {
+            <div class="invalid-feedback d-block">
+              La contraseña debe tener al menos 6 caracteres.
+            </div>
+          }
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold mb-3" [disabled]="registerForm.invalid || isLoading">
+          @if (isLoading) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+          }
+          Registrarse
+        </button>
+
+        @if (errorMessage) {
+          <div class="alert alert-danger py-2 mb-3">{{ errorMessage }}</div>
+        }
+
+        <div class="text-center">
+          <span class="text-muted small">¿Ya tienes una cuenta? </span>
+          <a routerLink="/auth/login" class="text-primary fw-semibold small text-decoration-none">Inicia sesión</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

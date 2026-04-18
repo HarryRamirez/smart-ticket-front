@@ -1,0 +1,81 @@
+<div class="projects-container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold" style="color: var(--ink-primary);">Proyectos</h2>
+      <p class="small" style="color: var(--ink-tertiary);">Gestiona tus espacios de trabajo y equipos.</p>
+    </div>
+    <button class="btn btn-primary d-flex align-items-center" routerLink="/projects/new">
+      <i class="bi bi-plus-lg me-2"></i>
+      Nuevo Proyecto
+    </button>
+  </div>
+
+  @if (isLoading) {
+    <div class="row g-4">
+      @for (i of [1,2,3]; track i) {
+        <div class="col-md-4">
+          <div class="card h-100 placeholder-glow">
+            <div class="card-body">
+              <span class="placeholder col-4 mb-3"></span>
+              <h5 class="placeholder col-8 d-block"></h5>
+              <p class="placeholder col-12"></p>
+              <span class="placeholder col-6"></span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  } @else if (projects.length === 0) {
+    <div class="card border-0 p-5 text-center">
+      <i class="bi bi-folder2-open display-1 mb-4 d-block" style="color: var(--ink-tertiary);"></i>
+      <h3 class="fw-bold" style="color: var(--ink-primary);">No hay proyectos</h3>
+      <p class="small" style="color: var(--ink-tertiary);">Crea tu primer proyecto para empezar a gestionar tickets.</p>
+      <button class="btn btn-primary mt-3" routerLink="/projects/new">
+        Crear Proyecto
+      </button>
+    </div>
+  } @else {
+    <div class="row g-4">
+      @for (project of projects; track project.id) {
+        <div class="col-md-4">
+          <div class="card h-100 border-0 hover-card">
+            <div class="card-body">
+              <div class="d-flex align-items-center mb-3">
+                <span class="badge bg-primary-subtle text-primary fw-bold me-3" style="min-width: 40px; padding: 0.4rem;">
+                  {{ project.key }}
+                </span>
+                <h5 class="card-title fw-bold mb-0 text-truncate" style="color: var(--ink-primary);">{{ project.name }}</h5>
+              </div>
+              <p class="small mb-4 text-truncate-2" style="color: var(--ink-tertiary);">{{ project.description }}</p>
+               
+              <div class="d-flex justify-content-between align-items-center mt-auto pt-3" style="border-top: 1px solid var(--border-subtle);">
+                <div class="small" style="color: var(--ink-tertiary);">
+                  <i class="bi bi-people me-1"></i> {{ project.members_count }} miembros
+                </div>
+                <button class="btn btn-sm btn-outline-primary" [routerLink]="['/projects', project.id]">
+                  Abrir <i class="bi bi-arrow-right ms-1"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<style>
+.text-truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+.hover-card {
+  transition: transform 0.2s, border-color 0.2s;
+}
+.hover-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-emphasis) !important;
+}
+</style>

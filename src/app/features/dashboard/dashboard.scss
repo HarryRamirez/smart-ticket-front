@@ -1,0 +1,125 @@
+.dashboard-container {
+  .metric-card {
+    border: 1px solid var(--border-default);
+    transition: all 0.2s ease;
+    
+    &:hover {
+      border-color: var(--border-emphasis);
+      transform: translateY(-2px);
+    }
+  }
+
+  .metric-icon {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ls-1 {
+    letter-spacing: 0.5px;
+  }
+
+  .smaller {
+    font-size: 11px;
+  }
+
+  .hover-bg-light:hover {
+    background-color: var(--surface-muted);
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
+  .avatar-xs-circle {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+  }
+
+  .text-main {
+    color: var(--ink-primary);
+  }
+  
+  .text-muted-custom {
+    color: var(--ink-tertiary);
+  }
+
+  .modal-backdrop-custom {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+  }
+
+  .modal-custom {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    background: #fff !important;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    z-index: 10001 !important;
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .modal-header-custom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .modal-title {
+    color: var(--ink-primary);
+    font-size: 18px;
+  }
+
+  .btn-close-custom {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 6px;
+    color: var(--ink-tertiary);
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: var(--surface-muted);
+      color: var(--ink-primary);
+    }
+  }
+
+  .modal-link-custom {
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline !important;
+    }
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
+  .no-scroll {
+    overflow: hidden;
+  }
+
+  .modal-body-custom {
+    padding: 16px 24px;
+    overflow-y: auto;
+    flex: 1;
+  }
+}

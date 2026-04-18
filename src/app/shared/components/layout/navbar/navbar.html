@@ -1,0 +1,40 @@
+<header class="navbar navbar-expand-lg bg-white border-bottom fixed-top px-4" style="border-bottom: 1px solid var(--border-default);">
+  <div class="container-fluid p-0">
+    <div class="d-flex align-items-center">
+      <button class="btn btn-link p-0 me-3 d-lg-none" style="color: var(--ink-primary);" (click)="toggleSidebar()">
+        <i class="bi bi-list fs-4"></i>
+      </button>
+      <a class="navbar-brand d-flex align-items-center" routerLink="/">
+        <img src="/logo.png" alt="SmartTicket" height="32">
+      </a>
+    </div>
+
+    <div class="d-flex align-items-center ms-auto">
+      <div class="dropdown">
+        <button class="btn d-flex align-items-center border-0 bg-transparent py-1 px-2" 
+                type="button" data-bs-toggle="dropdown" style="background: transparent;">
+          <div class="user-avatar me-2 text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" 
+               style="width: 32px; height: 32px; font-size: 13px; background: var(--primary);">
+            {{ userInitials() }}
+          </div>
+          <span class="fw-medium small d-none d-sm-inline" style="color: var(--ink-primary);">{{ userName() }}</span>
+          <i class="bi bi-chevron-down ms-2 small" style="color: var(--ink-tertiary);"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end mt-2 p-2" style="border: 1px solid var(--border-default);">
+          <li class="px-3 py-2 mb-2" style="border-bottom: 1px solid var(--border-subtle);">
+            <div class="fw-bold small" style="color: var(--ink-primary);">{{ userName() }}</div>
+            <div class="smaller" style="color: var(--ink-tertiary);">{{ userEmail() }}</div>
+          </li>
+          <li><a class="dropdown-item rounded-2 py-2" routerLink="/profile"><i class="bi bi-person me-2"></i> Mi Perfil</a></li>
+          <li><a class="dropdown-item rounded-2 py-2" routerLink="/settings"><i class="bi bi-gear me-2"></i> Configuración</a></li>
+          <li><hr class="dropdown-divider mx-2"></li>
+          <li>
+            <button class="dropdown-item rounded-2 py-2 d-flex align-items-center" style="color: var(--danger);" (click)="logout()">
+              <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>

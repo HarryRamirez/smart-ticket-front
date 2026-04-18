@@ -1,0 +1,190 @@
+@use "bootstrap/scss/bootstrap" as *;
+@use "bootstrap-icons/font/bootstrap-icons.css";
+
+:root {
+  --surface-base: #FFFFFF;
+  --surface-raised: #F8FAFC;
+  --surface-muted: #F1F5F9;
+  
+  --ink-primary: #0F172A;
+  --ink-secondary: #475569;
+  --ink-tertiary: #94A3B8;
+  --ink-placeholder: #CBD5E1;
+  
+  --border-default: #E2E8F0;
+  --border-subtle: #F1F5F9;
+  --border-emphasis: #CBD5E1;
+  
+  --primary: #0F6CBD;
+  --primary-hover: #0A5BA8;
+  --primary-subtle: rgba(15, 108, 189, 0.08);
+  --primary-bg: #E0F2FE;
+  
+  --success: #16A34A;
+  --success-subtle: rgba(22, 163, 74, 0.08);
+  --success-bg: #DCFCE7;
+  
+  --warning: #CA8A04;
+  --warning-subtle: rgba(202, 138, 4, 0.08);
+  --warning-bg: #FEF9C3;
+  
+  --danger: #DC2626;
+  --danger-subtle: rgba(220, 38, 38, 0.08);
+  --danger-bg: #FEE2E2;
+  
+  --info: #0891B2;
+  --info-subtle: rgba(8, 145, 178, 0.08);
+  --info-bg: #CFFAFE;
+  
+  --bg-app: #F1F5F9;
+  --bg-sidebar: #0F172A;
+  --bg-sidebar-hover: #1E293B;
+  
+  --text-main: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+  
+  --card-shadow: none;
+  --card-border: 1px solid var(--border-default);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+.card {
+  border: var(--card-border);
+  border-radius: 6px;
+  box-shadow: var(--card-shadow);
+  background: var(--surface-base);
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  background: transparent;
+  border-bottom: 1px solid var(--border-default);
+  padding: 1rem 1.5rem;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink-primary);
+  margin-bottom: 0;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  font-weight: 500;
+  border-radius: 3px;
+  padding: 0.4rem 1rem;
+  &:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+  }
+}
+
+.btn-outline-primary {
+  border-color: var(--border-default);
+  color: var(--ink-secondary);
+  &:hover {
+    background: var(--surface-muted);
+    border-color: var(--border-emphasis);
+    color: var(--ink-primary);
+  }
+}
+
+.badge {
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 11px;
+  padding: 4px 6px;
+  border-radius: 3px;
+  letter-spacing: 0.3px;
+}
+
+.form-control, .form-select {
+  background-color: var(--surface-muted);
+  border: 1px solid var(--border-default);
+  color: var(--ink-primary);
+  border-radius: 3px;
+  
+  &:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-subtle);
+    background-color: var(--surface-base);
+  }
+  
+  &::placeholder {
+    color: var(--ink-placeholder);
+  }
+}
+
+.input-group-text {
+  background-color: var(--surface-muted);
+  border: 1px solid var(--border-default);
+  border-right: none;
+  color: var(--ink-tertiary);
+}
+
+.input-group > .form-control:focus {
+  border-left: none;
+}
+
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: var(--surface-raised);
+  --bs-table-hover-bg: var(--surface-muted);
+  color: var(--ink-secondary);
+  
+  thead {
+    background-color: var(--surface-muted);
+    color: var(--ink-tertiary);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  th {
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-default);
+  }
+  
+  td {
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 12px 16px;
+    vertical-align: middle;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #C1C7D0;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A5ADBA;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

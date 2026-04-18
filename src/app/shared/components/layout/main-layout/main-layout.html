@@ -1,0 +1,20 @@
+<div class="main-container" [class.sidebar-collapsed]="isSidebarCollapsed()">
+  <app-navbar></app-navbar>
+  
+  <div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar-container border-end">
+      <app-sidebar></app-sidebar>
+    </aside>
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper" class="w-100">
+      <main class="content-area">
+        <div class="fade-in">
+          <router-outlet></router-outlet>
+        </div>
+      </main>
+      <app-footer></app-footer>
+    </div>
+  </div>
+</div>
