@@ -75,11 +75,11 @@ export class ProjectService {
   }
 
   removeMember(projectId: number, memberId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${projectId}/members/${memberId}/`);
+    return this.http.delete<void>(`${this.apiUrl}/${projectId}/member/${memberId}/delete/`);
   }
 
-  updateMemberRole(projectId: number, memberId: number, role: UpdateProjectMember): Observable<ProjectMemberResponse> {
-    return this.http.put<ProjectMemberResponse>(`${this.apiUrl}/${projectId}/members/${memberId}/`, role);
+  updateMemberRole(projectId: number, memberId: number, role: { role: string }): Observable<ProjectMemberResponse> {
+    return this.http.patch<ProjectMemberResponse>(`${this.apiUrl}/${projectId}/member/${memberId}/update/`, role);
   }
 
   deleteProjects(ids: number[]): Observable<{ message: string }> {

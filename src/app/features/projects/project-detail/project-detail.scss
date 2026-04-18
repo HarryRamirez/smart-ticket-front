@@ -396,6 +396,34 @@
   background-repeat: no-repeat;
   background-position: right 8px center;
   background-size: 10px;
+
+  &:disabled {
+    background-color: #f4f5f7;
+    color: #6b778c;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}
+
+.btn-delete-member {
+  background: none;
+  border: none;
+  color: #bf2600;
+  cursor: pointer;
+  padding: 4px;
+  font-size: 14px;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:disabled {
+    color: #a5adba;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 }
 
 .btn-delete-member {
@@ -543,4 +571,40 @@
 .activity-time {
   color: #6b778c;
   font-size: 12px;
+}
+
+.toast-notification {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 2000;
+  animation: slideInRight 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.toast-success {
+  background: #e3fcef;
+  color: #006644;
+  border: 1px solid #b8eecf;
+}
+
+.toast-error {
+  background: #ffebe6;
+  color: #bf2600;
+  border: 1px solid #ffbdad;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }

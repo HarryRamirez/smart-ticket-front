@@ -59,6 +59,8 @@ export class ProjectDetailComponent implements OnInit {
   allActivity: ActivityProject[] = [];
   editingSprint: SprintResponse | null = null;
   editingStatus: StatusResponse | null = null;
+  toastMessage = '';
+  toastType: 'success' | 'error' | '' = '';
 
   newSprint = {
     name: '',
@@ -101,6 +103,8 @@ export class ProjectDetailComponent implements OnInit {
   ];
 
   currentUserEmail = '';
+  currentUserId: number | null = null;
+  currentUserRole: 'admin' | 'developer' | 'qa' | 'viewer' | null = null;
 
   mockStatuses: StatusResponse[] = [
     { id: 1, name: 'Por hacer', created_by: {} as UserResponse, order: 1, is_active: true, project: 1 },
@@ -213,7 +217,25 @@ export class ProjectDetailComponent implements OnInit {
     if (userStr) {
       const user = JSON.parse(userStr);
       this.currentUserEmail = user.email;
+      this.currentUserId = user.id;
     }
+  }
+
+  getCurrentUserRoleInProject(): 'admin' | 'developer' | 'qa' | 'viewer' | null {
+    if (!this.currentUserId || !this.projectMembers.length) return null;
+    const member = this.projectMembers.find(m => m.user.id === this.currentUserId);
+    return member ? member.role : null;
+  }
+
+  canEditRole(): boolean {
+    return this.getCurrentUserRoleInProject() === 'admin';
+  }
+
+  canDeleteMember(memberRole: string): boolean {
+    const currentRole = this.getCurrentUserRoleInProject();
+    if (currentRole === 'admin') return true;
+    if (memberRole === 'admin') return false;
+    return currentRole === null;
   }
 
   loadProjectData(id: number): void {
@@ -312,28 +334,7 @@ export class ProjectDetailComponent implements OnInit {
     return (user.first_name?.[0] || '') + (user.last_name?.[0] || '');
   }
 
-  updateMemberRole(userId: number, newRole: string): void {
-    if (!this.project) return;
-    const member = this.membersData.find(m => m.user.id === userId);
-    if (!member) return;
-    
-    this.projectService.updateMemberRole(this.project.id, member.id, { role: newRole as any }).subscribe({
-      next: () => {
-        const index = this.membersData.findIndex(m => m.user.id === userId);
-        if (index >= 0) {
-          this.membersData[index].role = newRole as any;
-        }
-      },
-      error: (err) => {
-        console.error('Error updating role:', err);
-      }
-    });
-  }
 
-  confirmDeleteMember(userId: number): void {
-    this.memberToDelete = userId;
-    this.showDeleteMemberModal = true;
-  }
 
   deleteMember(): void {
     if (!this.project || !this.memberToDelete) return;
@@ -623,14 +624,63 @@ export class ProjectDetailComponent implements OnInit {
         this.selectedUserForAdd = null;
         this.searchResults = [];
         this.showNoResults = false;
+        this.showToast('Miembro agregado correctamente', 'success');
       },
       error: (err: any) => {
         console.error('Error adding member:', err);
         this.showAddMemberForm = false;
         this.memberSearch = '';
         this.selectedUserForAdd = null;
+        this.showToast('Error al agregar miembro', 'error');
       }
     });
+  }
+
+  updateMemberRole(memberId: number, newRole: string): void {
+    if (!this.project) return;
+    
+    const member = this.projectMembers.find(m => m.id === memberId);
+    if (!member || member.role === newRole) return;
+
+    this.projectService.updateMemberRole(this.project.id, memberId, { role: newRole }).subscribe({
+      next: () => {
+        const index = this.projectMembers.findIndex(m => m.id === memberId);
+        if (index !== -1) {
+          this.projectMembers[index] = { ...this.projectMembers[index], role: newRole as 'admin' | 'developer' | 'qa' | 'viewer' };
+        }
+        this.showToast('Rol actualizado correctamente', 'success');
+      },
+      error: (err) => {
+        console.error('Error updating role:', err);
+        this.showToast('Error al actualizar el rol', 'error');
+      }
+    });
+  }
+
+  confirmDeleteMember(memberId: number): void {
+    if (!this.project) return;
+    
+    if (confirm('¿Estás seguro de que deseas eliminar este miembro del proyecto?')) {
+      this.projectService.removeMember(this.project.id, memberId).subscribe({
+        next: () => {
+          this.projectMembers = this.projectMembers.filter(m => m.id !== memberId);
+          this.showToast('Miembro eliminado correctamente', 'success');
+        },
+        error: (err) => {
+          console.error('Error removing member:', err);
+          this.showToast('Error al eliminar el miembro', 'error');
+        }
+      });
+    }
+  }
+
+  showToast(message: string, type: 'success' | 'error'): void {
+    this.toastMessage = message;
+    this.toastType = type;
+    setTimeout(() => {
+      this.toastMessage = '';
+      this.toastType = '';
+    }, 3000);
   }
 
   searchUsers(query: string): void {

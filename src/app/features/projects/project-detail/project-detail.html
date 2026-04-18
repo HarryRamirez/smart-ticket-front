@@ -435,12 +435,16 @@
                 </div>
                 <select class="form-select form-select-sm member-role-select" 
                         [value]="member.role" 
-                        (change)="updateMemberRole(member.user.id, $any($event).target.value)">
+                        [disabled]="!canEditRole()"
+                        (change)="updateMemberRole(member.id, $any($event).target.value)">
                   @for (role of availableRoles; track role) {
                     <option [value]="role">{{ getRoleLabel(role) }}</option>
                   }
                 </select>
-                <button class="btn-delete-member" (click)="confirmDeleteMember(member.user.id)" title="Eliminar miembro">
+                <button class="btn-delete-member" 
+                        (click)="confirmDeleteMember(member.id)" 
+                        [title]="canDeleteMember(member.role) ? 'Eliminar miembro' : 'No tienes permiso'"
+                        [disabled]="!canDeleteMember(member.role)">
                   <i class="bi bi-trash"></i>
                 </button>
               </div>
@@ -500,6 +504,13 @@
           }
         </div>
       </div>
+    </div>
+  }
+
+  <!-- Toast Notification -->
+  @if (toastMessage) {
+    <div class="toast-notification" [class.toast-success]="toastType === 'success'" [class.toast-error]="toastType === 'error'">
+      {{ toastMessage }}
     </div>
   }
 </div>
