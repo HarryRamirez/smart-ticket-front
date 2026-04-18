@@ -610,20 +610,19 @@ export class ProjectDetailComponent implements OnInit {
   addMember(): void {
     if (!this.project || !this.selectedUserForAdd) return;
 
-    const newMember: CreateProjectMember = {
-      project: this.project.id,
+    const memberData = {
       user: this.selectedUserForAdd.id,
       role: this.newMemberRole
     };
 
-    this.projectService.addMember(this.project.id, newMember).subscribe({
+    this.projectService.addMember(this.project.id, memberData).subscribe({
       next: (member) => {
-        if (member.user) {
-          this.members = [...this.members, member.user];
-        }
+        this.loadMembers(this.project!.id);
         this.showAddMemberForm = false;
         this.memberSearch = '';
         this.selectedUserForAdd = null;
+        this.searchResults = [];
+        this.showNoResults = false;
       },
       error: (err: any) => {
         console.error('Error adding member:', err);

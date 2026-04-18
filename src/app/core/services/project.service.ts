@@ -70,8 +70,8 @@ export class ProjectService {
     return this.http.get<ProjectMemberWithUser[]>(`${this.apiUrl}/${projectId}/members/`);
   }
 
-  addMember(projectId: number, member: CreateProjectMember): Observable<ProjectMemberResponse> {
-    return this.http.post<ProjectMemberResponse>(`${this.apiUrl}/${projectId}/members/`, member);
+  addMember(projectId: number, member: { user: number; role: string }): Observable<ProjectMemberResponse> {
+    return this.http.post<ProjectMemberResponse>(`${this.apiUrl}/members/add/${projectId}/`, member);
   }
 
   removeMember(projectId: number, memberId: number): Observable<void> {
