@@ -348,213 +348,33 @@
 
   <!-- Members Modal -->
   @if (showMembersModal) {
-    <div class="modal-backdrop show" (click)="toggleMembersModal()" style="background: rgba(9, 30, 66, 0.54);"></div>
-    <div class="modal fade show d-flex align-items-center justify-content-center" style="display: flex !important;">
-      <div class="modal-dialog" style="max-width: 500px;">
-        <div class="modal-content" style="border-radius: 3px; border: 1px solid #dfe1e6;">
-          <div class="modal-header py-3 px-4" style="background: #f4f5f7; border-bottom: 1px solid #dfe1e6; border-radius: 3px 3px 0 0;">
-            <h5 class="modal-title fw-semibold" style="font-size: 16px; color: #172b4d; margin: 0;">Miembros del Proyecto</h5>
-            <button type="button" class="btn-close" (click)="toggleMembersModal()" style="font-size: 18px;"></button>
-          </div>
-          <div class="modal-body p-4">
-            <!-- Agregar nuevo miembro -->
-            @if (showAddMemberForm) {
-              <div class="mb-4 p-3" style="background: #f4f5f7; border-radius: 3px;">
-                <div class="mb-3">
-                  <label style="font-size: 12px; color: #5e6c84; font-weight: 600; display: block; margin-bottom: 6px;">BUSCAR USUARIO</label>
-                  <input type="text" class="form-control" [(ngModel)]="memberSearch" (input)="searchUsers(memberSearch)" 
-                         placeholder="Buscar por email o nombre..."
-                         style="border: 1px solid #dfe1e6; border-radius: 3px; font-size: 13px; padding: 8px 12px;">
-                  @if (filteredUsers.length > 0) {
-                    <div class="mt-2" style="background: #fff; border: 1px solid #dfe1e6; border-radius: 3px; max-height: 150px; overflow-y: auto;">
-                      @for (user of filteredUsers; track user.id) {
-                        <div class="d-flex align-items-center p-2 cursor-pointer" 
-                             style="cursor: pointer; border-bottom: 1px solid #dfe1e6;"
-                             (click)="selectUser(user)">
-                          <div class="rounded-circle me-2 d-flex align-items-center justify-content-center text-white fw-semibold" 
-                               [style.background-color]="getMemberColor(user.id)"
-                               style="width: 28px; height: 28px; font-size: 10px;">
-                            {{ getInitials(user) }}
-                          </div>
-                          <div>
-                            <div style="color: #172b4d; font-size: 13px;">{{ user.first_name }} {{ user.last_name }}</div>
-                            <div style="color: #6b778c; font-size: 11px;">{{ user.email }}</div>
-                          </div>
-                        </div>
-                      }
-                    </div>
-                  }
-                </div>
-                @if (selectedUserForAdd) {
-                  <div class="mb-3 p-2 bg-white rounded-3 border" style="border-color: #dfe1e6 !important;">
-                    <div class="d-flex align-items-center">
-                      <div class="rounded-circle me-2 d-flex align-items-center justify-content-center text-white fw-semibold" 
-                           [style.background-color]="getMemberColor(selectedUserForAdd.id)"
-                           style="width: 28px; height: 28px; font-size: 10px;">
-                        {{ getInitials(selectedUserForAdd) }}
-                      </div>
-                      <div class="flex-grow-1">
-                        <div style="color: #172b4d; font-size: 13px; font-weight: 500;">{{ selectedUserForAdd.first_name }} {{ selectedUserForAdd.last_name }}</div>
-                        <div style="color: #6b778c; font-size: 11px;">{{ selectedUserForAdd.email }}</div>
-                      </div>
-                      <button class="btn btn-link p-0" (click)="clearSelectedUser()" style="color: #bf2600;">
-                        <i class="bi bi-x-lg" style="font-size: 14px;"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <div class="mb-3">
-                    <label style="font-size: 12px; color: #5e6c84; font-weight: 600; display: block; margin-bottom: 6px;">ROL</label>
-                    <select class="form-select" [(ngModel)]="newMemberRole"
-                            style="border: 1px solid #dfe1e6; border-radius: 3px; font-size: 13px; padding: 8px 12px;">
-                      @for (role of availableRoles; track role) {
-                        <option [value]="role">{{ getRoleLabel(role) }}</option>
-                      }
-                    </select>
-                  </div>
-                  <button class="btn w-100" (click)="addMember()" 
-                          style="background: #0052cc; color: #fff; border: none; border-radius: 3px; font-size: 13px; font-weight: 500; padding: 8px 16px;">
-                    Agregar miembro
-                  </button>
-                }
-              </div>
-            } @else {
-              <div class="d-flex justify-content-start mb-3">
-                <button class="btn btn-sm" (click)="toggleAddMemberForm()" 
-                        style="background: #0052cc; color: #fff; border: none; border-radius: 3px; font-size: 13px; font-weight: 500; padding: 6px 16px;">
-                  <i class="bi bi-plus-lg me-1"></i>Agregar Miembro
-                </button>
-              </div>
-            }
-
-            <!-- Lista de miembros actuales -->
-            <div style="margin-top: 16px;">
-              <label style="font-size: 12px; color: #5e6c84; font-weight: 600; display: block; margin-bottom: 8px;">MIEMBROS ({{ projectMembers.length }})</label>
-              @for (member of projectMembers; track member.id) {
-                <div class="d-flex align-items-center p-3 mb-2" style="background: #f4f5f7; border-radius: 3px;">
-                  <div class="rounded-circle me-3 d-flex align-items-center justify-content-center text-white fw-semibold" 
-                       [style.background-color]="getMemberColor(member.user.id)"
-                       style="width: 32px; height: 32px; font-size: 11px;">
-                    {{ getInitials(member.user) }}
-                  </div>
-                  <div class="flex-grow-1">
-                    <div style="color: #172b4d; font-size: 13px; font-weight: 500;">{{ member.user.first_name }} {{ member.user.last_name }}</div>
-                    <div style="color: #6b778c; font-size: 11px;">{{ member.user.email }}</div>
-                  </div>
-                  <select class="form-select form-select-sm me-2" 
-                          [value]="member.role" 
-                          (change)="updateMemberRole(member.user.id, $any($event).target.value)"
-                          style="border: 1px solid #dfe1e6; border-radius: 3px; font-size: 12px; padding: 4px 8px; width: auto; color: #42526e;">
-                    @for (role of availableRoles; track role) {
-                      <option [value]="role">{{ getRoleLabel(role) }}</option>
-                    }
-                  </select>
-                  <button class="btn btn-link p-0" (click)="confirmDeleteMember(member.user.id)" 
-                          style="color: #bf2600; font-size: 14px;" title="Eliminar miembro">
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </div>
-              }
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  }
-
-  <!-- Delete Member Modal -->
-  @if (showDeleteMemberModal) {
-    <div class="modal-backdrop show" (click)="showDeleteMemberModal = false" style="background: rgba(9, 30, 66, 0.54);"></div>
-    <div class="modal fade show d-flex align-items-center justify-content-center" style="display: flex !important;">
-      <div class="modal-dialog" style="max-width: 400px;">
-        <div class="modal-content" style="border-radius: 3px; border: 1px solid #dfe1e6;">
-          <div class="modal-header py-3 px-4" style="background: #f4f5f7; border-bottom: 1px solid #dfe1e6; border-radius: 3px 3px 0 0;">
-            <h5 class="modal-title fw-semibold" style="font-size: 16px; color: #172b4d; margin: 0;">Confirmar Eliminación</h5>
-            <button type="button" class="btn-close" (click)="showDeleteMemberModal = false" style="font-size: 18px;"></button>
-          </div>
-          <div class="modal-body p-4">
-            <p style="color: #172b4d; font-size: 14px; margin-bottom: 0;">¿Estás seguro de que deseas eliminar este miembro del proyecto?</p>
-          </div>
-          <div class="modal-footer py-3 px-4" style="border-top: 1px solid #dfe1e6; background: #f4f5f7; border-radius: 0 0 3px 3px;">
-            <button class="btn" (click)="showDeleteMemberModal = false" 
-                    style="background: #ebecf0; color: #42526e; border: none; border-radius: 3px; font-size: 13px; font-weight: 500; padding: 8px 16px;">
-              Cancelar
-            </button>
-            <button class="btn" (click)="deleteMember()" 
-                    style="background: #de350b; color: #fff; border: none; border-radius: 3px; font-size: 13px; font-weight: 500; padding: 8px 16px;">
-              Eliminar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  }
-
-  <!-- Activity Modal -->
-  @if (showActivityModal) {
-    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(9, 30, 66, 0.54); z-index: 1040;" (click)="closeActivityModal()"></div>
-    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; z-index: 1050; pointer-events: none;">
-      <div style="background: #fff; border-radius: 3px; border: 1px solid #dfe1e6; width: 100%; max-width: 600px; max-height: 80vh; display: flex; flex-direction: column; pointer-events: auto;" (click)="$event.stopPropagation()">
-        <div class="py-3 px-4" style="background: #f4f5f7; border-bottom: 1px solid #dfe1e6; border-radius: 3px 3px 0 0; display: flex; justify-content: space-between; align-items: center;">
-          <h5 class="fw-semibold mb-0" style="font-size: 16px; color: #172b4d;">Actividad del Proyecto</h5>
-          <button type="button" (click)="closeActivityModal()" style="background: none; border: none; font-size: 20px; color: #6b778c; cursor: pointer; padding: 0;">
-            <i class="bi bi-x"></i>
+    <div class="members-modal-backdrop" (click)="toggleMembersModal()"></div>
+    <div class="members-modal-container">
+      <div class="members-modal-content" (click)="$event.stopPropagation()">
+        <div class="members-modal-header">
+          <h5 class="members-modal-title">Miembros del Proyecto</h5>
+          <button type="button" class="members-modal-close" (click)="toggleMembersModal()">
+            <i class="bi bi-x-lg"></i>
           </button>
         </div>
-        <div class="p-0" style="overflow-y: auto; flex: 1;">
-          @for (activity of allActivity; track $index) {
-            <div class="p-4" style="border-bottom: 1px solid #dfe1e6;">
-              <div class="d-flex">
-                <div class="flex-shrink-0 me-3">
-                  <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: #c1c7d2;">
-                    <i class="bi bi-person" style="font-size: 14px; color: #fff;"></i>
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <p class="mb-1" style="color: #172b4d; font-size: 14px; margin-bottom: 4px;" [innerHTML]="formatActivityMessage(activity.message)"></p>
-                  <span style="color: #6b778c; font-size: 12px;">{{ formatTimeAgo(activity.time_ago) }}</span>
-                </div>
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-    </div>
-  }
-
-  <!-- Members Modal -->
-  @if (showMembersModal) {
-    <div style="position: fixed; inset: 0; background: rgba(9, 30, 66, 0.54); z-index: 1000;" (click)="toggleMembersModal()"></div>
-    <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1001; width: 90%; max-width: 500px;">
-      <div style="background: #fff; border-radius: 3px; border: 1px solid #dfe1e6;" (click)="$event.stopPropagation()">
-        <div class="py-3 px-4" style="background: #f4f5f7; border-bottom: 1px solid #dfe1e6; border-radius: 3px 3px 0 0; display: flex; justify-content: space-between; align-items: center;">
-          <h5 class="fw-semibold mb-0" style="font-size: 16px; color: #172b4d;">Miembros del Proyecto</h5>
-          <button type="button" (click)="toggleMembersModal()" style="background: none; border: none; font-size: 20px; color: #6b778c; cursor: pointer; padding: 0;">
-            <i class="bi bi-x"></i>
-          </button>
-        </div>
-        <div class="p-4" style="overflow-y: auto; flex: 1;">
+        <div class="members-modal-body">
           <!-- Agregar nuevo miembro -->
           @if (showAddMemberForm) {
-            <div class="mb-4 p-3" style="background: #f4f5f7; border-radius: 3px;">
+            <div class="add-member-form">
               <div class="mb-3">
-                <label style="font-size: 12px; color: #5e6c84; font-weight: 600; display: block; margin-bottom: 6px;">BUSCAR USUARIO</label>
+                <label class="form-label">BUSCAR USUARIO</label>
                 <input type="text" class="form-control" [(ngModel)]="memberSearch" (input)="searchUsers(memberSearch)" 
-                       placeholder="Buscar por email o nombre..."
-                       style="border: 1px solid #dfe1e6; border-radius: 3px; font-size: 13px; padding: 8px 12px;">
+                       placeholder="Buscar por email o nombre...">
                 @if (filteredUsers.length > 0) {
-                  <div class="mt-2" style="background: #fff; border: 1px solid #dfe1e6; border-radius: 3px; max-height: 150px; overflow-y: auto;">
+                  <div class="search-results">
                     @for (user of filteredUsers; track user.id) {
-                      <div class="d-flex align-items-center p-2 cursor-pointer" 
-                           style="cursor: pointer; border-bottom: 1px solid #dfe1e6;"
-                           (click)="selectUser(user)">
-                        <div class="rounded-circle me-2 d-flex align-items-center justify-content-center text-white fw-semibold" 
-                             [style.background-color]="getMemberColor(user.id)"
-                             style="width: 28px; height: 28px; font-size: 10px;">
+                      <div class="search-result-item" (click)="selectUser(user)">
+                        <div class="member-avatar" [style.background-color]="getMemberColor(user.id)">
                           {{ getInitials(user) }}
                         </div>
                         <div>
-                          <div style="color: #172b4d; font-size: 13px;">{{ user.first_name }} {{ user.last_name }}</div>
-                          <div style="color: #6b778c; font-size: 11px;">{{ user.email }}</div>
+                          <div class="member-name">{{ user.first_name }} {{ user.last_name }}</div>
+                          <div class="member-email">{{ user.email }}</div>
                         </div>
                       </div>
                     }
@@ -562,70 +382,61 @@
                 }
               </div>
               @if (selectedUserForAdd) {
-                <div class="mb-3 p-2 bg-white rounded-3 border" style="border-color: #dfe1e6 !important;">
+                <div class="selected-user">
                   <div class="d-flex align-items-center">
-                    <div class="rounded-circle me-2 d-flex align-items-center justify-content-center text-white fw-semibold" 
-                         [style.background-color]="getMemberColor(selectedUserForAdd.id)"
-                         style="width: 28px; height: 28px; font-size: 10px;">
+                    <div class="member-avatar me-2" [style.background-color]="getMemberColor(selectedUserForAdd.id)">
                       {{ getInitials(selectedUserForAdd) }}
                     </div>
                     <div class="flex-grow-1">
-                      <div style="color: #172b4d; font-size: 13px; font-weight: 500;">{{ selectedUserForAdd.first_name }} {{ selectedUserForAdd.last_name }}</div>
-                      <div style="color: #6b778c; font-size: 11px;">{{ selectedUserForAdd.email }}</div>
+                      <div class="member-name">{{ selectedUserForAdd.first_name }} {{ selectedUserForAdd.last_name }}</div>
+                      <div class="member-email">{{ selectedUserForAdd.email }}</div>
                     </div>
-                    <button class="btn btn-link p-0" (click)="clearSelectedUser()" style="color: #bf2600;">
-                      <i class="bi bi-x-lg" style="font-size: 14px;"></i>
+                    <button class="btn-remove" (click)="clearSelectedUser()">
+                      <i class="bi bi-x-lg"></i>
                     </button>
                   </div>
                 </div>
                 <div class="mb-3">
-                  <label style="font-size: 12px; color: #5e6c84; font-weight: 600; display: block; margin-bottom: 6px;">ROL</label>
-                  <select class="form-select" [(ngModel)]="newMemberRole"
-                          style="border: 1px solid #dfe1e6; border-radius: 3px; font-size: 13px; padding: 8px 12px;">
+                  <label class="form-label">ROL</label>
+                  <select class="form-select" [(ngModel)]="newMemberRole">
                     @for (role of availableRoles; track role) {
                       <option [value]="role">{{ getRoleLabel(role) }}</option>
                     }
                   </select>
                 </div>
-                <button class="btn w-100" (click)="addMember()" 
-                        style="background: #0052cc; color: #fff; border: none; border-radius: 3px; font-size: 13px; font-weight: 500; padding: 8px 16px;">
+                <button class="btn btn-primary w-100" (click)="addMember()">
                   Agregar miembro
                 </button>
               }
             </div>
           } @else {
-            <div class="d-flex justify-content-start mb-3">
-              <button class="btn btn-sm" (click)="toggleAddMemberForm()" 
-                      style="background: #0052cc; color: #fff; border: none; border-radius: 3px; font-size: 13px; font-weight: 500; padding: 6px 16px;">
+            <div class="mb-3">
+              <button class="btn btn-primary" (click)="toggleAddMemberForm()">
                 <i class="bi bi-plus-lg me-1"></i>Agregar Miembro
               </button>
             </div>
           }
 
           <!-- Lista de miembros actuales -->
-          <div style="margin-top: 16px;">
-            <label style="font-size: 12px; color: #5e6c84; font-weight: 600; display: block; margin-bottom: 8px;">MIEMBROS ({{ projectMembers.length }})</label>
+          <div class="members-list">
+            <label class="list-label">MIEMBROS ({{ projectMembers.length }})</label>
             @for (member of projectMembers; track member.id) {
-              <div class="d-flex align-items-center p-3 mb-2" style="background: #f4f5f7; border-radius: 3px;">
-                <div class="rounded-circle me-3 d-flex align-items-center justify-content-center text-white fw-semibold" 
-                     [style.background-color]="getMemberColor(member.user.id)"
-                     style="width: 32px; height: 32px; font-size: 11px;">
+              <div class="member-item">
+                <div class="member-avatar-lg" [style.background-color]="getMemberColor(member.user.id)">
                   {{ getInitials(member.user) }}
                 </div>
-                <div class="flex-grow-1">
-                  <div style="color: #172b4d; font-size: 13px; font-weight: 500;">{{ member.user.first_name }} {{ member.user.last_name }}</div>
-                  <div style="color: #6b778c; font-size: 11px;">{{ member.user.email }}</div>
+                <div class="member-info">
+                  <div class="member-name">{{ member.user.first_name }} {{ member.user.last_name }}</div>
+                  <div class="member-email">{{ member.user.email }}</div>
                 </div>
-                <select class="form-select form-select-sm me-2" 
+                <select class="form-select form-select-sm member-role-select" 
                         [value]="member.role" 
-                        (change)="updateMemberRole(member.user.id, $any($event).target.value)"
-                        style="border: 1px solid #dfe1e6; border-radius: 3px; font-size: 12px; padding: 4px 8px; width: auto; color: #42526e;">
+                        (change)="updateMemberRole(member.user.id, $any($event).target.value)">
                   @for (role of availableRoles; track role) {
                     <option [value]="role">{{ getRoleLabel(role) }}</option>
                   }
                 </select>
-                <button class="btn btn-link p-0" (click)="confirmDeleteMember(member.user.id)" 
-                        style="color: #bf2600; font-size: 14px;" title="Eliminar miembro">
+                <button class="btn-delete-member" (click)="confirmDeleteMember(member.user.id)" title="Eliminar miembro">
                   <i class="bi bi-trash"></i>
                 </button>
               </div>
@@ -638,27 +449,51 @@
 
   <!-- Delete Member Modal -->
   @if (showDeleteMemberModal) {
-    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(9, 30, 66, 0.54); z-index: 1040;" (click)="showDeleteMemberModal = false"></div>
-    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; z-index: 1050; pointer-events: none;">
-      <div style="background: #fff; border-radius: 3px; border: 1px solid #dfe1e6; width: 100%; max-width: 400px; pointer-events: auto;" (click)="$event.stopPropagation()">
-        <div class="py-3 px-4" style="background: #f4f5f7; border-bottom: 1px solid #dfe1e6; border-radius: 3px 3px 0 0; display: flex; justify-content: space-between; align-items: center;">
-          <h5 class="fw-semibold mb-0" style="font-size: 16px; color: #172b4d;">Confirmar Eliminación</h5>
-          <button type="button" (click)="showDeleteMemberModal = false" style="background: none; border: none; font-size: 20px; color: #6b778c; cursor: pointer; padding: 0;">
-            <i class="bi bi-x"></i>
+    <div class="members-modal-backdrop" (click)="showDeleteMemberModal = false"></div>
+    <div class="members-modal-container">
+      <div class="members-modal-content members-modal-sm" (click)="$event.stopPropagation()">
+        <div class="members-modal-header">
+          <h5 class="members-modal-title">Confirmar Eliminación</h5>
+          <button type="button" class="members-modal-close" (click)="showDeleteMemberModal = false">
+            <i class="bi bi-x-lg"></i>
           </button>
         </div>
-        <div class="p-4">
-          <p style="color: #172b4d; font-size: 14px; margin-bottom: 0;">¿Estás seguro de que deseas eliminar este miembro del proyecto?</p>
+        <div class="members-modal-body">
+          <p>¿Estás seguro de que deseas eliminar este miembro del proyecto?</p>
         </div>
-        <div class="py-3 px-4" style="border-top: 1px solid #dfe1e6; background: #f4f5f7; border-radius: 0 0 3px 3px; display: flex; justify-content: flex-end; gap: 8px;">
-          <button class="btn" (click)="showDeleteMemberModal = false" 
-                  style="background: #ebecf0; color: #42526e; border: none; border-radius: 3px; font-size: 13px; font-weight: 500; padding: 8px 16px;">
-            Cancelar
+        <div class="members-modal-footer">
+          <button class="btn btn-secondary" (click)="showDeleteMemberModal = false">Cancelar</button>
+          <button class="btn btn-danger" (click)="deleteMember()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Activity Modal -->
+  @if (showActivityModal) {
+    <div class="activity-modal-backdrop" (click)="closeActivityModal()"></div>
+    <div class="activity-modal-container">
+      <div class="activity-modal-content" (click)="$event.stopPropagation()">
+        <div class="activity-modal-header">
+          <h5 class="activity-modal-title">Actividad del Proyecto</h5>
+          <button type="button" class="activity-modal-close" (click)="closeActivityModal()">
+            <i class="bi bi-x-lg"></i>
           </button>
-          <button class="btn" (click)="deleteMember()" 
-                  style="background: #de350b; color: #fff; border: none; border-radius: 3px; font-size: 13px; font-weight: 500; padding: 8px 16px;">
-            Eliminar
-          </button>
+        </div>
+        <div class="activity-modal-body">
+          @for (activity of allActivity; track $index) {
+            <div class="activity-item">
+              <div class="d-flex">
+                <div class="activity-avatar">
+                  <i class="bi bi-person"></i>
+                </div>
+                <div class="activity-content">
+                  <p class="activity-message" [innerHTML]="formatActivityMessage(activity.message)"></p>
+                  <span class="activity-time">{{ formatTimeAgo(activity.time_ago) }}</span>
+                </div>
+              </div>
+            </div>
+          }
         </div>
       </div>
     </div>
