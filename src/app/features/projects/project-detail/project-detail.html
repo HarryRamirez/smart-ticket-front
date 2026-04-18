@@ -363,51 +363,55 @@
             <div class="add-member-form">
               <div class="mb-3">
                 <label class="form-label">BUSCAR USUARIO</label>
-                <input type="text" class="form-control" [(ngModel)]="memberSearch" (input)="searchUsers(memberSearch)" 
-                       placeholder="Buscar por email o nombre...">
-                @if (filteredUsers.length > 0) {
-                  <div class="search-results">
-                    @for (user of filteredUsers; track user.id) {
-                      <div class="search-result-item" (click)="selectUser(user)">
-                        <div class="member-avatar" [style.background-color]="getMemberColor(user.id)">
-                          {{ getInitials(user) }}
-                        </div>
-                        <div>
-                          <div class="member-name">{{ user.first_name }} {{ user.last_name }}</div>
-                          <div class="member-email">{{ user.email }}</div>
-                        </div>
+                @if (selectedUserForAdd) {
+                  <div class="selected-user-preview">
+                    <div class="d-flex align-items-center">
+                      <div class="member-avatar" [style.background-color]="getMemberColor(selectedUserForAdd.id)">
+                        {{ getInitials(selectedUserForAdd) }}
                       </div>
-                    }
+                      <div class="flex-grow-1">
+                        <div class="member-name">{{ selectedUserForAdd.first_name }} {{ selectedUserForAdd.last_name }}</div>
+                        <div class="member-email">{{ selectedUserForAdd.email }}</div>
+                      </div>
+                      <button class="btn-remove" (click)="clearSelectedUser()">
+                        <i class="bi bi-x-lg"></i>
+                      </button>
+                    </div>
                   </div>
+                  <div class="mb-3 mt-3">
+                    <label class="form-label">ROL</label>
+                    <select class="form-select" [(ngModel)]="newMemberRole">
+                      @for (role of availableRoles; track role) {
+                        <option [value]="role">{{ getRoleLabel(role) }}</option>
+                      }
+                    </select>
+                  </div>
+                  <button class="btn btn-primary w-100" (click)="addMember()">
+                    Agregar miembro
+                  </button>
+                } @else {
+                  <input type="text" class="form-control" [(ngModel)]="memberSearch" (input)="onSearchInput()" 
+                         placeholder="Buscar por email o nombre..." autocomplete="off">
+                  @if (showNoResults) {
+                    <div class="search-no-results">No se encontraron usuarios</div>
+                  }
+                  @if (searchResults.length > 0) {
+                    <div class="search-results">
+                      @for (user of searchResults; track user.id) {
+                        <div class="search-result-item" (click)="selectUser(user)">
+                          <div class="member-avatar" [style.background-color]="getMemberColor(user.id)">
+                            {{ getInitials(user) }}
+                          </div>
+                          <div>
+                            <div class="member-name">{{ user.first_name }} {{ user.last_name }}</div>
+                            <div class="member-email">{{ user.email }}</div>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  }
                 }
               </div>
-              @if (selectedUserForAdd) {
-                <div class="selected-user">
-                  <div class="d-flex align-items-center">
-                    <div class="member-avatar me-2" [style.background-color]="getMemberColor(selectedUserForAdd.id)">
-                      {{ getInitials(selectedUserForAdd) }}
-                    </div>
-                    <div class="flex-grow-1">
-                      <div class="member-name">{{ selectedUserForAdd.first_name }} {{ selectedUserForAdd.last_name }}</div>
-                      <div class="member-email">{{ selectedUserForAdd.email }}</div>
-                    </div>
-                    <button class="btn-remove" (click)="clearSelectedUser()">
-                      <i class="bi bi-x-lg"></i>
-                    </button>
-                  </div>
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">ROL</label>
-                  <select class="form-select" [(ngModel)]="newMemberRole">
-                    @for (role of availableRoles; track role) {
-                      <option [value]="role">{{ getRoleLabel(role) }}</option>
-                    }
-                  </select>
-                </div>
-                <button class="btn btn-primary w-100" (click)="addMember()">
-                  Agregar miembro
-                </button>
-              }
             </div>
           } @else {
             <div class="mb-3">

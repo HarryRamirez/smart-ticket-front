@@ -166,6 +166,7 @@
   border-radius: 6px;
   padding: 16px;
   margin-bottom: 20px;
+  position: relative;
 }
 
 .form-label {
@@ -206,8 +207,23 @@
   background: #fff;
   border: 1px solid #dfe1e6;
   border-radius: 4px;
-  max-height: 150px;
+  max-height: 200px;
   overflow-y: auto;
+  position: absolute;
+  width: calc(100% - 0px);
+  z-index: 10;
+  margin-top: 4px;
+}
+
+.search-no-results {
+  background: #fff;
+  border: 1px solid #dfe1e6;
+  border-radius: 4px;
+  padding: 12px;
+  color: #6b778c;
+  font-size: 13px;
+  text-align: center;
+  margin-top: 4px;
 }
 
 .search-result-item {
@@ -267,6 +283,14 @@
 }
 
 .selected-user {
+  background: #fff;
+  border: 1px solid #dfe1e6;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 12px;
+}
+
+.selected-user-preview {
   background: #fff;
   border: 1px solid #dfe1e6;
   border-radius: 4px;
@@ -355,19 +379,23 @@
   background: #f4f5f7;
   border-radius: 4px;
   margin-bottom: 8px;
+  gap: 8px;
 }
 
 .member-info {
   flex: 1;
   min-width: 0;
-  margin-right: 8px;
 }
 
 .member-role-select {
-  width: auto;
-  margin-right: 8px;
-  padding: 4px 8px;
+  width: 120px;
+  padding: 6px 24px 6px 8px;
   font-size: 12px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236b778c' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 10px;
 }
 
 .btn-delete-member {

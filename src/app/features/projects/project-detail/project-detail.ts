@@ -88,6 +88,9 @@ export class ProjectDetailComponent implements OnInit {
   newMemberRole: 'admin' | 'developer' | 'qa' | 'viewer' = 'developer';
   availableRoles = ['admin', 'developer', 'qa', 'viewer'] as const;
   memberSearch = '';
+  searchResults: UserResponse[] = [];
+  showNoResults = false;
+  private searchTimeout: any;
   
   mockUsers: UserResponse[] = [
     { id: 10, username: 'juan.perez', email: 'juan.perez@empresa.com', first_name: 'Juan', last_name: 'Pérez' },
@@ -604,17 +607,6 @@ export class ProjectDetailComponent implements OnInit {
     this.newMemberEmail = '';
   }
 
-  selectUser(user: UserResponse): void {
-    this.selectedUserForAdd = user;
-    this.memberSearch = user.email;
-    this.mockUsers = [];
-  }
-
-  clearSelectedUser(): void {
-    this.selectedUserForAdd = null;
-    this.memberSearch = '';
-  }
-
   addMember(): void {
     if (!this.project || !this.selectedUserForAdd) return;
 
@@ -643,28 +635,42 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   searchUsers(query: string): void {
-    if (query.length < 2) {
-      this.mockUsers = [];
+    if (!this.project || query.length < 2) {
+      this.searchResults = [];
+      this.showNoResults = false;
       return;
     }
-    this.userService.searchUsers(query).subscribe({
+    this.userService.searchUsers(query, this.project.id).subscribe({
       next: (users) => {
-        this.mockUsers = users;
+        this.searchResults = users;
+        this.showNoResults = users.length === 0;
       },
-      error: () => {}
+      error: () => {
+        this.searchResults = [];
+        this.showNoResults = false;
+      }
     });
   }
 
-  removeMember(memberId: number): void {
-    if (!this.project) return;
-    this.projectService.removeMember(this.project.id, memberId).subscribe({
-      next: () => {
-        this.members = this.members.filter(m => m.id !== memberId);
-      },
-      error: (err: any) => {
-        console.error('Error removing member:', err);
-      }
-    });
+  onSearchInput(): void {
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+    this.searchTimeout = setTimeout(() => {
+      this.searchUsers(this.memberSearch);
+    }, 300);
+  }
+
+  selectUser(user: UserResponse): void {
+    this.selectedUserForAdd = user;
+    this.memberSearch = `${user.first_name} ${user.last_name} (${user.email})`;
+    this.searchResults = [];
+  }
+
+  clearSelectedUser(): void {
+    this.selectedUserForAdd = null;
+    this.memberSearch = '';
+    this.searchResults = [];
   }
 
   getRoleColor(role: string): string {
