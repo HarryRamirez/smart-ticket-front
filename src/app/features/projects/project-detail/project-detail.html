@@ -27,6 +27,63 @@
     (close)="toggleTicketModal()">
   </app-ticket-create>
 
+  <!-- Sprint Create/Edit Modal -->
+  @if (showSprintModal) {
+    <div class="sprint-modal-backdrop" (click)="toggleSprintModal()"></div>
+    <div class="sprint-modal-container">
+      <div class="sprint-modal-content" (click)="$event.stopPropagation()">
+        <div class="sprint-modal-header">
+          <h5 class="sprint-modal-title">{{ editingSprint ? 'Editar Sprint' : 'Crear Sprint' }}</h5>
+          <button type="button" class="sprint-modal-close" (click)="toggleSprintModal()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="sprint-modal-body">
+          <div class="form-group">
+            <label class="form-label">Nombre del Sprint</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              [(ngModel)]="newSprint.name" 
+              placeholder="Ej: Sprint 1">
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Fecha de Inicio</label>
+              <input 
+                type="date" 
+                class="form-control" 
+                [(ngModel)]="newSprint.start_date">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Fecha de Fin</label>
+              <input 
+                type="date" 
+                class="form-control" 
+                [(ngModel)]="newSprint.end_date">
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Estado</label>
+            <select class="form-select" [(ngModel)]="newSprint.status">
+              <option value="planificado">Planificado</option>
+              <option value="activo">Activo</option>
+              <option value="completado">Completado</option>
+            </select>
+          </div>
+        </div>
+        <div class="sprint-modal-footer">
+          <button type="button" class="btn-cancel" (click)="toggleSprintModal()">Cancelar</button>
+          <button type="button" class="btn-save" (click)="createSprint()">
+            {{ editingSprint ? 'Guardar' : 'Crear Sprint' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
   <!-- Main Navigation Tabs -->
   <ul class="nav nav-pills custom-pills mb-4 border-bottom pb-2">
     <li class="nav-item">
@@ -327,7 +384,7 @@
             <p>No hay sprints creados</p>
             <span>Crea un sprint para organizar el trabajo</span>
             <button class="btn-new-sprint" (click)="toggleSprintModal()">
-              <i class="bi bi-plus-lg"></i>
+              <i class="bi bi-plus-lg mb-0"></i>
               Crear Sprint
             </button>
           </div>
