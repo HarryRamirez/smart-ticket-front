@@ -79,3 +79,38 @@
 - Header: bg-surface-muted, uppercase labels
 - Rows: hover state with subtle bg change
 - Borders: horizontal only, border-subtle
+
+## Backlog & Board Patterns
+
+### Layout
+- Header con título + subtítulo + acciones (search + boton crear)
+- Grid: 340px Sprints (izquierda) | 1fr Backlog (derecha)
+- Board: columns horizontales con scroll
+
+### Sprints Section
+- Card con gradiente en header (surface-raised → surface-muted)
+- Badge de estado: pill con color según estado (activo = success)
+- Progress: contador de tickets en sprint activo
+- Fechas con icono de calendario
+
+### Tickets (Backlog)
+- Layout: type icon | key + content (title + meta) | assignee avatar
+- Type icon: círculo con color según tipo (bug=danger, task=primary, story=success, epic=warning)
+- Priority: dot de color + tag con borde del mismo color
+- Status: badge con bg y color según estado
+
+### Tickets (Board - Compact)
+- Header: type icon + key + priority dot
+- Title: texto simple
+- Footer: type badge + assignee avatar
+
+### Empty States
+- Icono en círculo (48px)
+- Texto: título + subtítulo
+- Borde punteado (2px)
+- Botón de acción cuando aplica
+
+### Columnas Board
+- Header con indicator de color, título, contador
+- Botón agregar en header
+- Scroll vertical interno

@@ -65,13 +65,13 @@
                 <div class="col-6 col-md-3">
                   <div class="p-3" style="background: #ebecf0; border-radius: 3px;">
                     <div class="mb-1" style="font-size: 11px; color: #5e6c84; text-transform: uppercase; font-weight: 600;">Tickets</div>
-                    <div class="h4 fw-bold mb-0" style="font-size: 24px; color: #172b4d;">{{ projectStatus?.tickets || 0 }}</div>
+                    <div class="h4 fw-bold mb-0" style="font-size: 24px; color: #172b4d;">{{ projectStatus?.tickets_count || 0 }}</div>
                   </div>
                 </div>
                 <div class="col-6 col-md-3">
                   <div class="p-3" style="background: #ebecf0; border-radius: 3px;">
                     <div class="mb-1" style="font-size: 11px; color: #5e6c84; text-transform: uppercase; font-weight: 600;">Sprints</div>
-                    <div class="h4 fw-bold mb-0" style="font-size: 24px; color: #172b4d;">{{ projectStatus?.sprints || 0 }}</div>
+                    <div class="h4 fw-bold mb-0" style="font-size: 24px; color: #172b4d;">{{ projectStatus?.sprints_count || 0 }}</div>
                   </div>
                 </div>
                 @for (status of (projectStatus?.statuses || []); track status.id) {
@@ -206,83 +206,222 @@
     </div>
 
     <!-- BACKLOG TAB -->
-    <div *ngIf="activeTab === 'backlog'" class="fade-in">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="d-flex gap-3 align-items-center">
-          <input type="text" class="form-control" placeholder="Buscar tickets..." [(ngModel)]="backlogFilter" 
-                 style="max-width: 250px; border: 1px solid #dfe1e6; border-radius: 3px; font-size: 13px; padding: 6px 12px;">
-          <button class="btn btn-primary btn-sm px-3" (click)="toggleTicketModal()" 
-                  style="background: #0052cc; border: none; border-radius: 3px; font-size: 13px; font-weight: 500;">
-            <i class="bi bi-plus-lg me-1"></i>Crear Ticket
+    <div *ngIf="activeTab === 'backlog'" class="backlog-container fade-in">
+      <!-- Backlog Header -->
+      <div class="backlog-header">
+        <div class="backlog-title-area">
+          <h4 class="backlog-title">
+            <i class="bi bi-list-columns-reverse"></i>
+            Planeación del Sprint
+          </h4>
+          <p class="backlog-subtitle">Organiza y prioriza el trabajo del proyecto</p>
+        </div>
+        <div class="backlog-actions">
+          <div class="search-wrapper">
+            <i class="bi bi-search search-icon"></i>
+            <input 
+              type="text" 
+              class="search-input" 
+              placeholder="Buscar tickets..." 
+              [(ngModel)]="backlogFilter">
+          </div>
+          <button class="btn-create-ticket" (click)="toggleTicketModal()">
+            <i class="bi bi-plus-lg"></i>
+            Nuevo Ticket
           </button>
         </div>
       </div>
 
-      @if (isLoading) {
-        <div class="text-center py-5">
-          <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+      <!-- Backlog Content -->
+      <div class="backlog-content">
+        <!-- Sprints Section -->
+        <div class="sprints-section">
+          <div class="section-header">
+            <div class="d-flex gap-3 align-items-center">
+              <h6 class="section-title">
+                <i class="bi bi-lightning-charge-fill"></i>
+                Sprints
+              </h6>
+              <span class="sprint-count">{{ sprints.length }}</span>
+            </div>
+            <button class="btn-new-sprint" (click)="toggleSprintModal()">
+              <i class="bi bi-plus-lg"></i>
+              Nuevo Sprint
+            </button>
           </div>
-        </div>
-      } @else {
-        <div class="card border rounded-3" style="border-color: #dfe1e6 !important;">
-          <div class="table-responsive">
-            <table class="table table-hover mb-0" style="font-size: 13px;">
-              <thead style="background: #f4f5f7;">
-                <tr>
-                  <th class="border-0 ps-4 py-3" style="color: #5e6c84; font-weight: 600; font-size: 11px; text-transform: uppercase;">Key</th>
-                  <th class="border-0 py-3" style="color: #5e6c84; font-weight: 600; font-size: 11px; text-transform: uppercase;">Resumen</th>
-                  <th class="border-0 py-3" style="color: #5e6c84; font-weight: 600; font-size: 11px; text-transform: uppercase;">Tipo</th>
-                  <th class="border-0 py-3" style="color: #5e6c84; font-weight: 600; font-size: 11px; text-transform: uppercase;">Prioridad</th>
-                  <th class="border-0 py-3" style="color: #5e6c84; font-weight: 600; font-size: 11px; text-transform: uppercase;">Estado</th>
-                  <th class="border-0 py-3" style="color: #5e6c84; font-weight: 600; font-size: 11px; text-transform: uppercase;">Asignado</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (ticket of backlogTickets; track ticket.id) {
-                  <tr style="border-bottom: 1px solid #dfe1e6; cursor: pointer;" (click)="editTicket(ticket)">
-                    <td class="ps-4 py-3">
-                      <span style="color: #0052cc; font-weight: 600; font-size: 12px;">{{ ticket.key }}</span>
-                    </td>
-                    <td class="py-3" style="color: #172b4d;">{{ ticket.title }}</td>
-                    <td class="py-3">
-                      <span style="background: #ebecf0; color: #42526e; padding: 2px 8px; border-radius: 3px; font-size: 11px;">{{ ticket.type }}</span>
-                    </td>
-                    <td class="py-3">
-                      <span [style]="getJiraPriorityStyle(ticket.priority)">{{ ticket.priority }}</span>
-                    </td>
-                    <td class="py-3">
-                      <span [style]="getJiraStatusStyle(ticket.status.name || '')">{{ ticket.status.name }}</span>
-                    </td>
-                    <td class="py-3">
-                      @if (ticket.assigned_to) {
-                        <div class="d-flex align-items-center">
-                          <div class="rounded-circle me-2 d-flex align-items-center justify-content-center text-white fw-semibold" 
-                               [style.background-color]="getMemberColor(ticket.assigned_to.id)"
-                               style="width: 24px; height: 24px; font-size: 10px;">
+          
+          <div class="sprints-list" *ngIf="sprints.length > 0">
+            @for (sprint of sprints; track sprint.id) {
+              <div class="sprint-card" [class.sprint-active]="sprint.status === 'activo'">
+                <div class="sprint-header">
+                  <div class="sprint-info">
+                    <div class="sprint-top">
+                      <span class="sprint-badge" [class.active]="sprint.status === 'activo'">
+                        <i class="bi" [class.bi-play-fill]="sprint.status === 'activo'" [class.bi-clock]="sprint.status !== 'activo'"></i>
+                        {{ sprint.status }}
+                      </span>
+                      @if (sprint.status === 'activo') {
+                        <span class="sprint-progress">
+                          {{ getTicketsBySprint(sprint.id).length }} tickets
+                        </span>
+                      }
+                    </div>
+                    <h4 class="sprint-name">{{ sprint.name }}</h4>
+                    <span class="sprint-dates" *ngIf="sprint.start_date && sprint.end_date">
+                      <i class="bi bi-calendar3"></i>
+                      {{ formatSprintDates(sprint.start_date, sprint.end_date) }}
+                    </span>
+                  </div>
+                  <div class="sprint-actions">
+                    @if (sprint.status !== 'activo') {
+                      <button class="btn-start-sprint" (click)="startSprint(sprint)" title="Iniciar Sprint">
+                        <i class="bi bi-play-fill"></i>
+                      </button>
+                    }
+                  </div>
+                </div>
+                <div 
+                  class="sprint-tickets"
+                  (dragover)="$event.preventDefault()"
+                  (drop)="onDropToSprint($event, sprint.id)">
+                  @for (ticket of getTicketsBySprint(sprint.id); track ticket.id) {
+                    <div 
+                      class="ticket-card-mini"
+                      draggable="true"
+                      (dragstart)="onDragStart($event, ticket)"
+                      (click)="editTicket(ticket)">
+                      <div class="ticket-card-left">
+                        <span class="ticket-key-mini">{{ ticket.key }}</span>
+                        <span class="ticket-type-icon" [attr.data-type]="ticket.type">
+                          <i class="bi" [ngClass]="getTypeIcon(ticket.type)"></i>
+                        </span>
+                      </div>
+                      <div class="ticket-card-body">
+                        <span class="ticket-title-mini">{{ ticket.title }}</span>
+                      </div>
+                      <div class="ticket-card-right">
+                        <span class="priority-dot" [style.background]="getPriorityColor(ticket.priority)" [title]="ticket.priority"></span>
+                        @if (ticket.assigned_to) {
+                          <div class="assignee-mini" [style.background]="getMemberColor(ticket.assigned_to.id)">
                             {{ getInitials(ticket.assigned_to) }}
                           </div>
-                          <span style="color: #172b4d; font-size: 12px;">{{ ticket.assigned_to.first_name }}</span>
-                        </div>
-                      } @else {
-                        <span style="color: #6b778c;">-</span>
-                      }
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
+                        }
+                      </div>
+                    </div>
+                  }
+                  @if (getTicketsBySprint(sprint.id).length === 0) {
+                    <div class="empty-sprint">
+                      <i class="bi bi-inbox"></i>
+                      <span>Arrastra tickets aquí</span>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+          
+          <div class="no-sprints" *ngIf="sprints.length === 0">
+            <div class="no-sprints-icon">
+              <i class="bi bi-collection"></i>
+            </div>
+            <p>No hay sprints creados</p>
+            <span>Crea un sprint para organizar el trabajo</span>
+            <button class="btn-new-sprint" (click)="toggleSprintModal()">
+              <i class="bi bi-plus-lg"></i>
+              Crear Sprint
+            </button>
           </div>
         </div>
-      }
+
+        <!-- Backlog Tickets Section -->
+        <div class="backlog-section">
+          <div class="section-header">
+            <div class="d-flex gap-3 align-items-center">
+              <h6 class="section-title">
+                <i class="bi bi-inbox"></i>
+                Backlog
+              </h6>
+              <span class="backlog-count">{{ backlogTickets.length }}</span>
+            </div>
+            <div class="backlog-hint">
+              <i class="bi bi-info-circle"></i>
+              Tickets sin asignar a sprint
+            </div>
+          </div>
+          
+          <div 
+            class="backlog-tickets"
+            (dragover)="$event.preventDefault()"
+            (drop)="onDropToBacklog($event)">
+            @for (ticket of backlogTickets; track ticket.id) {
+              <div 
+                class="ticket-card"
+                draggable="true"
+                (dragstart)="onDragStart($event, ticket)"
+                (click)="editTicket(ticket)">
+                <div class="ticket-main">
+                  <div class="ticket-type-col">
+                    <span class="ticket-type-icon" [attr.data-type]="ticket.type">
+                      <i class="bi" [ngClass]="getTypeIcon(ticket.type)"></i>
+                    </span>
+                    <span class="ticket-key">{{ ticket.key }}</span>
+                  </div>
+                  <div class="ticket-content">
+                    <h4 class="ticket-title">{{ ticket.title }}</h4>
+                    <div class="ticket-meta">
+                      <span class="priority-tag" [style.border-color]="getPriorityColor(ticket.priority)" [style.color]="getPriorityColor(ticket.priority)">
+                        <span class="priority-dot" [style.background]="getPriorityColor(ticket.priority)"></span>
+                        {{ ticket.priority }}
+                      </span>
+                      <span class="status-tag" [style.background]="getStatusBg(ticket.status.name)" [style.color]="getStatusColor(ticket.status.name)">
+                        {{ ticket.status.name }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="ticket-right">
+                  @if (ticket.assigned_to) {
+                    <div 
+                      class="assignee-avatar"
+                      [style.background-color]="getMemberColor(ticket.assigned_to.id)"
+                      [title]="ticket.assigned_to.first_name + ' ' + ticket.assigned_to.last_name">
+                      {{ getInitials(ticket.assigned_to) }}
+                    </div>
+                  } @else {
+                    <div class="assignee-avatar unassigned">
+                      <i class="bi bi-person"></i>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+            
+            <div class="empty-backlog" *ngIf="backlogTickets.length === 0">
+              <div class="empty-icon">
+                <i class="bi bi-check-circle"></i>
+              </div>
+              <p>No hay tickets en el backlog</p>
+              <span>Crea tickets o arrástralos desde un sprint</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- BOARD TAB -->
     <div *ngIf="activeTab === 'board'" class="fade-in">
-      <div class="d-flex justify-content-end mb-4">
-        <button class="btn btn-primary btn-sm px-3" (click)="openCreateTicketForStatus(0)" 
-                style="background: #0052cc; border: none; border-radius: 3px; font-size: 13px; font-weight: 500;">
-          <i class="bi bi-plus-lg me-1"></i>Crear Ticket
+      <!-- Board Header -->
+      <div class="board-header">
+        <div class="board-title-area">
+          <h4 class="board-title">
+            <i class="bi bi-kanban"></i>
+            Tablero de Trabajo
+          </h4>
+          <p class="board-subtitle">Visualiza el progreso de tus tickets por estado</p>
+        </div>
+        <button class="btn-create-ticket" (click)="openCreateTicketForStatus(0)">
+          <i class="bi bi-plus-lg"></i>
+          Nuevo Ticket
         </button>
       </div>
 
@@ -294,46 +433,54 @@
         </div>
       } @else {
         <div class="board-container">
-          <div class="row g-3 overflow-auto pb-3" style="min-height: 500px;">
+          <div class="board-columns">
             @for (status of statuses; track status.id) {
-              <div class="col-md-4 col-lg-3">
-                <div class="h-100" style="background: #f4f5f7; border-radius: 3px; padding: 12px;">
-                  <div class="d-flex justify-content-between align-items-center mb-3 pb-2" style="border-bottom: 2px solid #dfe1e6;">
-                    <h6 class="fw-semibold mb-0" style="font-size: 13px; color: #5e6c84; font-weight: 600;">
-                      {{ status.name }}
-                      <span class="ms-2" style="color: #6b778c; font-size: 12px;">{{ getTicketsByStatus(status.id).length }}</span>
-                    </h6>
+              <div class="board-column">
+                <div class="column-header">
+                  <div class="column-title-wrap">
+                    <span class="column-indicator" [style.background]="getStatusColor(status.name)"></span>
+                    <h6 class="column-title">{{ status.name }}</h6>
+                    <span class="column-count">{{ getTicketsByStatus(status.id).length }}</span>
                   </div>
-                  <div style="min-height: 200px;" 
-                       (dragover)="$event.preventDefault()" 
-                       (drop)="onDrop($event, status.id)">
-                    @for (ticket of getTicketsByStatus(status.id); track ticket.id) {
-                      <div class="card mb-2 cursor-grab rounded" 
-                           draggable="true" 
-                           (dragstart)="onDragStart($event, ticket)"
-                           style="background: #fff; border: 1px solid #dfe1e6; box-shadow: none;">
-                        <div class="card-body p-3" style="font-size: 13px;">
-                          <div class="d-flex justify-content-between align-items-start mb-2">
-                            <span style="color: #0052cc; font-weight: 600; font-size: 11px;">{{ ticket.key }}</span>
-                            <span [style]="getJiraPriorityStyle(ticket.priority)">{{ ticket.priority }}</span>
-                          </div>
-                          <p class="mb-2" style="color: #172b4d; line-height: 1.4;">{{ ticket.title }}</p>
-                          <div class="d-flex justify-content-between align-items-center">
-                            <span style="background: #ebecf0; color: #42526e; padding: 2px 6px; border-radius: 3px; font-size: 10px;">{{ ticket.type }}</span>
-                            @if (ticket.assigned_to) {
-                              <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-semibold" 
-                                   [style.background-color]="getMemberColor(ticket.assigned_to.id)"
-                                   style="width: 24px; height: 24px; font-size: 10px;" title="{{ ticket.assigned_to.first_name }} {{ ticket.assigned_to.last_name }}">
-                                {{ getInitials(ticket.assigned_to) }}
-                              </div>
-                            } @else {
-                              <span style="color: #6b778c; font-size: 11px;">Sin asignar</span>
-                            }
-                          </div>
-                        </div>
+                  <button class="column-add-btn" (click)="openCreateTicketForStatus(status.id)" title="Agregar ticket">
+                    <i class="bi bi-plus"></i>
+                  </button>
+                </div>
+                <div class="column-content" 
+                     (dragover)="$event.preventDefault()" 
+                     (drop)="onDrop($event, status.id)">
+                  @for (ticket of getTicketsByStatus(status.id); track ticket.id) {
+                    <div class="board-card" 
+                         draggable="true" 
+                         (dragstart)="onDragStart($event, ticket)">
+                      <div class="board-card-header">
+                        <span class="ticket-type-icon-sm" [attr.data-type]="ticket.type">
+                          <i class="bi" [ngClass]="getTypeIcon(ticket.type)"></i>
+                        </span>
+                        <span class="ticket-key-sm">{{ ticket.key }}</span>
+                        <span class="priority-indicator" [style.background]="getPriorityColor(ticket.priority)" [title]="ticket.priority"></span>
                       </div>
-                    }
-                  </div>
+                      <p class="board-card-title">{{ ticket.title }}</p>
+                      <div class="board-card-footer">
+                        <span class="ticket-type-sm" [attr.data-type]="ticket.type">{{ ticket.type }}</span>
+                        @if (ticket.assigned_to) {
+                          <div class="assignee-sm" [style.background]="getMemberColor(ticket.assigned_to.id)" [title]="ticket.assigned_to.first_name + ' ' + ticket.assigned_to.last_name">
+                            {{ getInitials(ticket.assigned_to) }}
+                          </div>
+                        } @else {
+                          <div class="assignee-sm unassigned">
+                            <i class="bi bi-person"></i>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                  @if (getTicketsByStatus(status.id).length === 0) {
+                    <div class="column-empty">
+                      <i class="bi bi-inbox"></i>
+                      <span>Sin tickets</span>
+                    </div>
+                  }
                 </div>
               </div>
             }
@@ -341,9 +488,8 @@
         </div>
       }
     </div>
-  </div>
 
-  <!-- Members Modal -->
+    <!-- Members Modal -->
   @if (showMembersModal) {
     <div class="members-modal-backdrop" (click)="toggleMembersModal()"></div>
     <div class="members-modal-container">

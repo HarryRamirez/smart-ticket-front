@@ -21,8 +21,8 @@ export interface Statuses{
 }
 export interface StatusProject{
   id: number;
-  tickets: number;
-  sprints: number;
+  tickets_count: number;
+  sprints_count: number;
   statuses: Statuses[];
 }
 

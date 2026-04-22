@@ -272,7 +272,7 @@ export class ProjectDetailComponent implements OnInit {
       members: [],
       members_count: 0
     };
-    this.projectStatus = { id, tickets: 10, sprints: 2, statuses: [] };
+    this.projectStatus = { id, tickets_count: 10, sprints_count: 2, statuses: [] };
     this.recentActivity = [];
     this.loadDueTickets(id);
     this.loadMembers(id);
@@ -422,9 +422,7 @@ export class ProjectDetailComponent implements OnInit {
     });
   }
 
-  resetNewSprint(): void {
-    this.newSprint = { name: '', start_date: '', end_date: '', status: 'planificado', is_active: false };
-  }
+ 
 
   createStatus(): void {
     if (!this.project || !this.newStatus.name) return;
@@ -540,9 +538,13 @@ export class ProjectDetailComponent implements OnInit {
       };
     } else {
       this.editingSprint = null;
-      this.resetNewSprint();
+      this.newSprint = { name: '', start_date: '', end_date: '', status: 'planificado', is_active: false };
     }
     this.showSprintModal = !this.showSprintModal;
+  }
+
+  resetNewSprint(): void {
+    this.newSprint = { name: '', start_date: '', end_date: '', status: 'planificado', is_active: false };
   }
 
   toggleStatusModal(status?: StatusResponse): void {
@@ -763,6 +765,39 @@ export class ProjectDetailComponent implements OnInit {
     this.showTicketModal = true;
   }
 
+  formatSprintDates(startDate: string, endDate: string): string {
+    if (!startDate || !endDate) return '';
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' };
+    return `${start.toLocaleDateString('es-ES', options)} - ${end.toLocaleDateString('es-ES', options)}`;
+  }
+
+  startSprint(sprint: SprintResponse): void {
+    this.ticketService.updateSprint(sprint.id, { is_active: true, status: 'activo' }).subscribe({
+      next: () => {
+        this.sprints = this.sprints.map(s => s.id === sprint.id ? { ...s, is_active: true, status: 'activo' } : s);
+      },
+      error: (err) => console.error('Error starting sprint:', err)
+    });
+  }
+
+  onDropToSprint(event: DragEvent, sprintId: number): void {
+    event.preventDefault();
+    if (this.draggedTicket) {
+      this.moveTicketToSprint(this.draggedTicket.id, sprintId);
+      this.draggedTicket = null;
+    }
+  }
+
+  onDropToBacklog(event: DragEvent): void {
+    event.preventDefault();
+    if (this.draggedTicket) {
+      this.moveTicketToSprint(this.draggedTicket.id, null);
+      this.draggedTicket = null;
+    }
+  }
+
   deleteTicket(ticketId: number): void {
     if (confirm('¿Estás seguro de que deseas eliminar este ticket?')) {
       this.ticketService.deleteTicket(ticketId).subscribe({
@@ -823,6 +858,58 @@ export class ProjectDetailComponent implements OnInit {
       return 'background: #fff0b3; color: #172b4d; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;';
     }
     return 'background: #ebecf0; color: #42526e; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;';
+  }
+
+  getPriorityColor(priority: string): string {
+    const colors: Record<string, string> = {
+      highest: '#DC2626',
+      critical: '#DC2626',
+      urgent: '#EA580C',
+      high: '#CA8A04',
+      medium: '#7C3AED',
+      low: '#64748B',
+      'very low': '#94A3B8'
+    };
+    return colors[priority?.toLowerCase() || ''] || '#64748B';
+  }
+
+  getStatusBg(statusName: string): string {
+    const name = statusName?.toLowerCase() || '';
+    if (name.includes('done') || name.includes('completado') || name.includes('cerrado')) {
+      return 'var(--success-bg)';
+    }
+    if (name.includes('progress') || name.includes('progreso') || name.includes('trabajando')) {
+      return 'var(--primary-bg)';
+    }
+    if (name.includes('review') || name.includes('revisión') || name.includes('test')) {
+      return 'var(--warning-bg)';
+    }
+    return 'var(--surface-muted)';
+  }
+
+  getStatusColor(statusName: string): string {
+    const name = statusName?.toLowerCase() || '';
+    if (name.includes('done') || name.includes('completado') || name.includes('cerrado')) {
+      return 'var(--success)';
+    }
+    if (name.includes('progress') || name.includes('progreso') || name.includes('trabajando')) {
+      return 'var(--primary)';
+    }
+    if (name.includes('review') || name.includes('revisión') || name.includes('test')) {
+      return 'var(--warning)';
+    }
+    return 'var(--ink-secondary)';
+  }
+
+  getTypeIcon(type: string): string {
+    const icons: Record<string, string> = {
+      bug: 'bi-bug',
+      task: 'bi-check2-square',
+      story: 'bi-book',
+      epic: 'bi-lightning',
+      subtask: 'bi-arrow-return-right'
+    };
+    return icons[type?.toLowerCase() || ''] || 'bi-circle';
   }
 
   formatActivityMessage(message: string): string {
