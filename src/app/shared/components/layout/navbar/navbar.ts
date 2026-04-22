@@ -16,7 +16,7 @@ export class NavbarComponent {
   
   userName = computed(() => {
     const u = this.user();
-    return u ? `${u.first_name} ${u.last_name}` : 'Usuario';
+    return u ? `${u.username}` : 'Usuario';
   });
 
   userEmail = computed(() => this.user()?.email || '');

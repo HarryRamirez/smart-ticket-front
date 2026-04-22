@@ -13,9 +13,6 @@
         <h3 class="fw-bold text-main mb-0">{{ project.name }}</h3>
       </div>
     </nav>
-    <div class="d-flex gap-2">
-      <button class="btn btn-light border btn-sm px-3 shadow-xs"><i class="bi bi-gear me-2"></i>Ajustes</button>
-    </div>
   </div>
 
   <!-- Ticket Create Modal -->
@@ -434,11 +431,11 @@
                   <div class="member-email">{{ member.user.email }}</div>
                 </div>
                 <select class="form-select form-select-sm member-role-select" 
-                        [value]="member.role" 
+                        [ngModel]="member.role"
                         [disabled]="!canEditRole()"
-                        (change)="updateMemberRole(member.id, $any($event).target.value)">
+                        (ngModelChange)="updateMemberRole(member.id, $event)">
                   @for (role of availableRoles; track role) {
-                    <option [value]="role">{{ getRoleLabel(role) }}</option>
+                    <option [ngValue]="role">{{ getRoleLabel(role) }}</option>
                   }
                 </select>
                 <button class="btn-delete-member" 
