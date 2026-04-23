@@ -18,9 +18,9 @@ import { Observable } from 'rxjs';
 })
 export class TicketService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/tickets`;
-  private statusUrl = `${environment.apiUrl}/statuses`;
-  private sprintUrl = `${environment.apiUrl}/sprints`;
+  private apiUrl = `${environment.apiUrl}/ticket`;
+  private statusUrl = `${environment.apiUrl}/status`;
+  private sprintUrl = `${environment.apiUrl}/sprint`;
 
   getTickets(projectId?: number, statusId?: number, sprintId?: number): Observable<TicketResponse[]> {
     let params = new HttpParams();
@@ -76,7 +76,7 @@ export class TicketService {
   }
 
   getSprints(projectId: number): Observable<SprintResponse[]> {
-    return this.http.get<SprintResponse[]>(`${this.sprintUrl}/`, { params: { project: projectId.toString() } });
+    return this.http.get<SprintResponse[]>(`${this.sprintUrl}/project/${projectId}/list`, { params: { project: projectId.toString() } });
   }
 
   createSprint(sprint: CreateSprint): Observable<SprintResponse> {

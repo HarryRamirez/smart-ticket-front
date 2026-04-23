@@ -252,6 +252,7 @@ export class ProjectDetailComponent implements OnInit {
         this.isLoading = false;
         this.loadDueTickets(id);
         this.loadMembers(id);
+        this.loadTicketsAndStatuses();
       },
       error: (err) => {
         console.error('Error loading project data:', err);
@@ -375,7 +376,7 @@ export class ProjectDetailComponent implements OnInit {
   loadTicketsAndStatuses(): void {
     if (!this.project) return;
     this.isLoading = true;
-    forkJoin({
+    /* forkJoin({
       tickets: this.ticketService.getTicketsByProject(this.project.id),
       statuses: this.ticketService.getStatusesByProject(this.project.id),
       sprints: this.ticketService.getSprints(this.project.id)
@@ -390,6 +391,18 @@ export class ProjectDetailComponent implements OnInit {
         console.error('Error loading tickets:', err);
         this.tickets = this.mockTickets;
         this.statuses = this.mockStatuses;
+        this.sprints = [];
+        this.isLoading = false;
+      }
+    }); */
+    this.ticketService.getSprints(this.project.id).subscribe({
+      next: (sprints) => {
+        console.log('Sprints loaded:', sprints);
+        this.sprints = sprints || [];
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading sprints:', err);
         this.sprints = [];
         this.isLoading = false;
       }

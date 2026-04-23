@@ -115,6 +115,7 @@ export interface SprintResponse {
   end_date: string;
   status: 'planificado' | 'activo' | 'completado';
   is_active: boolean;
+  ticket_count: number;
 }
 
 export interface CreateSprint {

@@ -317,9 +317,9 @@
                         <i class="bi" [class.bi-play-fill]="sprint.status === 'activo'" [class.bi-clock]="sprint.status !== 'activo'"></i>
                         {{ sprint.status }}
                       </span>
-                      @if (sprint.status === 'activo') {
+                      @if (sprint.status === 'activo' || sprint.status === 'planificado') {
                         <span class="sprint-progress">
-                          {{ getTicketsBySprint(sprint.id).length }} tickets
+                          {{ sprint.ticket_count }} tickets
                         </span>
                       }
                     </div>
@@ -341,32 +341,12 @@
                   class="sprint-tickets"
                   (dragover)="$event.preventDefault()"
                   (drop)="onDropToSprint($event, sprint.id)">
-                  @for (ticket of getTicketsBySprint(sprint.id); track ticket.id) {
-                    <div 
-                      class="ticket-card-mini"
-                      draggable="true"
-                      (dragstart)="onDragStart($event, ticket)"
-                      (click)="editTicket(ticket)">
-                      <div class="ticket-card-left">
-                        <span class="ticket-key-mini">{{ ticket.key }}</span>
-                        <span class="ticket-type-icon" [attr.data-type]="ticket.type">
-                          <i class="bi" [ngClass]="getTypeIcon(ticket.type)"></i>
-                        </span>
-                      </div>
-                      <div class="ticket-card-body">
-                        <span class="ticket-title-mini">{{ ticket.title }}</span>
-                      </div>
-                      <div class="ticket-card-right">
-                        <span class="priority-dot" [style.background]="getPriorityColor(ticket.priority)" [title]="ticket.priority"></span>
-                        @if (ticket.assigned_to) {
-                          <div class="assignee-mini" [style.background]="getMemberColor(ticket.assigned_to.id)">
-                            {{ getInitials(ticket.assigned_to) }}
-                          </div>
-                        }
-                      </div>
+                  @if (sprint.ticket_count > 0) {
+                    <div class="ticket-count-display">
+                      {{ sprint.ticket_count }} ticket(s)
                     </div>
                   }
-                  @if (getTicketsBySprint(sprint.id).length === 0) {
+                  @if (sprint.ticket_count === 0) {
                     <div class="empty-sprint">
                       <i class="bi bi-inbox"></i>
                       <span>Arrastra tickets aquí</span>
