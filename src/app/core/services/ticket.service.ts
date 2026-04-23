@@ -8,7 +8,8 @@ import {
   LabelResponse,
   CreateStatus,
   SprintResponse,
-  CreateSprint
+  CreateSprint,
+  PaginatedBacklogResponse
 } from '../models/entities';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
@@ -97,5 +98,19 @@ export class TicketService {
 
   moveTicketToSprint(ticketId: number, sprintId: number | null): Observable<TicketResponse> {
     return this.http.patch<TicketResponse>(`${this.apiUrl}/${ticketId}/`, { sprint: sprintId });
+  }
+
+  getBacklogTickets(projectId: number, params?: {
+    page?: number;
+    page_size?: number;
+    search_term?: string;
+  }): Observable<PaginatedBacklogResponse> {
+    let httpParams = new HttpParams();
+    if (params) {
+      if (params.page) httpParams = httpParams.set('page', params.page.toString());
+      if (params.page_size) httpParams = httpParams.set('page_size', params.page_size.toString());
+      if (params.search_term) httpParams = httpParams.set('search_term', params.search_term);
+    }
+    return this.http.get<PaginatedBacklogResponse>(`${this.apiUrl}/project/${projectId}/backlog/`, { params: httpParams });
   }
 }

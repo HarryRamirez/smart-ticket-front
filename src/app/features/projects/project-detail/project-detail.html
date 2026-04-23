@@ -371,7 +371,7 @@
                               class="assignee-avatar-sm"
                               [style.background-color]="getMemberColor(ticket.assigned_to.id)"
                               [title]="ticket.assigned_to.email || ticket.assigned_to.first_name + ' ' + ticket.assigned_to.last_name">
-                              {{ getInitials(ticket.assigned_to) }}
+                              {{ ticket.assigned_to.avatar }}
                             </div>
                           } @else {
                             <div class="assignee-avatar-sm unassigned">
@@ -429,8 +429,7 @@
               <div 
                 class="ticket-card"
                 draggable="true"
-                (dragstart)="onDragStart($event, ticket)"
-                (click)="editTicket(ticket)">
+>
                 <div class="ticket-main">
                   <div class="ticket-type-col">
                     <span class="ticket-type-icon" [attr.data-type]="ticket.type">
@@ -445,8 +444,8 @@
                         <span class="priority-dot" [style.background]="getPriorityColor(ticket.priority)"></span>
                         {{ ticket.priority }}
                       </span>
-                      <span class="status-tag" [style.background]="getStatusBg(ticket.status.name)" [style.color]="getStatusColor(ticket.status.name)">
-                        {{ ticket.status.name }}
+                      <span class="status-tag" [style.background]="getStatusBg(ticket.status)" [style.color]="getStatusColor(ticket.status)">
+                        {{ ticket.status }}
                       </span>
                     </div>
                   </div>
@@ -456,8 +455,8 @@
                     <div 
                       class="assignee-avatar"
                       [style.background-color]="getMemberColor(ticket.assigned_to.id)"
-                      [title]="ticket.assigned_to.first_name + ' ' + ticket.assigned_to.last_name">
-                      {{ getInitials(ticket.assigned_to) }}
+                      [title]="ticket.assigned_to.email">
+                      {{ ticket.assigned_to.avatar }}
                     </div>
                   } @else {
                     <div class="assignee-avatar unassigned">
@@ -537,7 +536,7 @@
                         <span class="ticket-type-sm" [attr.data-type]="ticket.type">{{ ticket.type }}</span>
                         @if (ticket.assigned_to) {
                           <div class="assignee-sm" [style.background]="getMemberColor(ticket.assigned_to.id)" [title]="ticket.assigned_to.first_name + ' ' + ticket.assigned_to.last_name">
-                            {{ getInitials(ticket.assigned_to) }}
+                            {{ ticket.assigned_to.avatar }}
                           </div>
                         } @else {
                           <div class="assignee-sm unassigned">

@@ -193,6 +193,21 @@ export interface TicketResponse {
   updated_at: string;
 }
 
+export interface userBacklog{
+  id: number;
+  email: string;
+  avatar: string
+}
+export interface backlogTicketsResponse {
+  id: number;
+  key: string;
+  title: string;
+  type: string
+  priority: string;
+  status: string;
+  assigned_to?: userBacklog;
+}
+
 export interface CreateTicket {
   project: number;
   title: string;
@@ -281,4 +296,12 @@ export interface UpdateAISuggestion {
   suggestion_type?: string;
   content?: string;
 }
+
+
+ export interface PaginatedBacklogResponse {
+    count: number;
+    next: string | null;
+    previous: string | null;
+    results: backlogTicketsResponse[];
+  }
 

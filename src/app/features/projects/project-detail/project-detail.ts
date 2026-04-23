@@ -17,7 +17,8 @@ import {
   CreateSprint,
   CreateStatus,
   ActivityProject,
-  DueTickets
+  DueTickets,
+  backlogTicketsResponse
 } from '../../../core/models/entities';
 import { TicketCreateComponent } from '../../tickets/ticket-create/ticket-create';
 import { forkJoin } from 'rxjs';
@@ -93,6 +94,15 @@ export class ProjectDetailComponent implements OnInit {
   searchResults: UserResponse[] = [];
   showNoResults = false;
   private searchTimeout: any;
+
+
+  backlogTickets: backlogTicketsResponse[] = [];
+  backlogPage = 1;
+  backlogPageSize = 10;
+  backlogTotalCount = 0;
+  backlogTotalPages = 1;
+  backlogLoading = false;
+  private backlogSearchTimeout: any;
   
   mockUsers: UserResponse[] = [
     { id: 10, username: 'juan.perez', email: 'juan.perez@empresa.com', first_name: 'Juan', last_name: 'Pérez' },
@@ -373,6 +383,9 @@ export class ProjectDetailComponent implements OnInit {
     if ((tab === 'backlog' || tab === 'board') && this.tickets.length === 0) {
       this.loadTicketsAndStatuses();
     }
+    if (tab === 'backlog' && this.project) {
+      this.loadBacklogTickets();
+    }
   }
 
   loadTicketsAndStatuses(): void {
@@ -500,18 +513,50 @@ export class ProjectDetailComponent implements OnInit {
     });
   }
 
-  get backlogTickets(): TicketResponse[] {
-    let tickets = this.tickets.filter(t => !t.sprint);
-    if (this.backlogFilter) {
-      const filter = this.backlogFilter.toLowerCase();
-      tickets = tickets.filter(t => 
-        t.key.toLowerCase().includes(filter) || 
-        t.title.toLowerCase().includes(filter)
-      );
+  loadBacklogTickets(): void {
+    if (!this.project) return;
+    this.backlogLoading = true;
+    this.ticketService.getBacklogTickets(this.project.id, {
+      page: this.backlogPage,
+      page_size: this.backlogPageSize,
+      search_term: this.backlogFilter || undefined
+    }).subscribe({
+      next: (response) => {
+        this.backlogTickets = response.results || [];
+        this.backlogTotalCount = response.count || 0;
+        this.backlogTotalPages = Math.ceil(this.backlogTotalCount / this.backlogPageSize) || 1;
+        this.backlogLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading backlog tickets:', err);
+        this.backlogTickets = [];
+        this.backlogLoading = false;
+      }
+    });
+  }
+  onBacklogSearchInput(): void {
+    if (this.backlogSearchTimeout) {
+      clearTimeout(this.backlogSearchTimeout);
     }
-    return tickets.sort((a, b) => this.getPriorityOrder(a.priority) - this.getPriorityOrder(b.priority));
+    this.backlogSearchTimeout = setTimeout(() => {
+      this.backlogPage = 1;
+      this.loadBacklogTickets();
+    }, 300);
   }
 
+  previousBacklogPage(): void {
+    if (this.backlogPage > 1) {
+      this.backlogPage--;
+      this.loadBacklogTickets();
+    }
+  }
+
+  nextBacklogPage(): void {
+    if (this.backlogPage < this.backlogTotalPages) {
+      this.backlogPage++;
+      this.loadBacklogTickets();
+    }
+  }
   getTicketsBySprint(sprintId: number): TicketResponse[] {
     return this.tickets.filter(t => t.sprint === sprintId);
   }

@@ -31,5 +31,7 @@ export type {
   AISuggestionResponse,
   CreateAISuggestion,
   UpdateAISuggestion,
-  DueTickets
+  DueTickets,
+  PaginatedBacklogResponse,
+  backlogTicketsResponse
 } from './entities';
