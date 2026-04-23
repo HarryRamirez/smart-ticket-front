@@ -280,7 +280,8 @@
               type="text" 
               class="search-input" 
               placeholder="Buscar tickets..." 
-              [(ngModel)]="backlogFilter">
+              [(ngModel)]="backlogFilter"
+              (ngModelChange)="onBacklogSearchInput()">
           </div>
           <button class="btn-create-ticket" (click)="toggleTicketModal()">
             <i class="bi bi-plus-lg"></i>
@@ -474,6 +475,24 @@
               <p>No hay tickets en el backlog</p>
               <span>Crea tickets o arrástralos desde un sprint</span>
             </div>
+            
+            @if (backlogTotalPages > 1) {
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <button 
+                  class="btn btn-sm btn-outline-secondary" 
+                  [disabled]="backlogPage <= 1"
+                  (click)="previousBacklogPage()">
+                  <i class="bi bi-chevron-left"></i> Anterior
+                </button>
+                <span class="text-muted small">Página {{ backlogPage }} de {{ backlogTotalPages }}</span>
+                <button 
+                  class="btn btn-sm btn-outline-secondary" 
+                  [disabled]="backlogPage >= backlogTotalPages"
+                  (click)="nextBacklogPage()">
+                  Siguiente <i class="bi bi-chevron-right"></i>
+                </button>
+              </div>
+            }
           </div>
         </div>
       </div>
