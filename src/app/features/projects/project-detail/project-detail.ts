@@ -963,10 +963,10 @@ export class ProjectDetailComponent implements OnInit {
   getTypeIcon(type: string): string {
     const icons: Record<string, string> = {
       bug: 'bi-bug',
-      task: 'bi-check2-square',
-      story: 'bi-book',
-      epic: 'bi-lightning',
-      subtask: 'bi-arrow-return-right'
+      tarea: 'bi-check2-square',
+      historia: 'bi-book',
+      mejora: 'bi-arrow-up-circle',
+      épica: 'bi-lightning'
     };
     return icons[type?.toLowerCase() || ''] || 'bi-circle';
   }

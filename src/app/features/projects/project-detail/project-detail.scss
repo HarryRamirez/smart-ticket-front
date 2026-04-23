@@ -980,17 +980,37 @@
     color: var(--danger);
   }
   
-  &[data-type="task"] {
+  &[data-type="tarea"] {
     background: var(--primary-bg);
     color: var(--primary);
   }
   
-  &[data-type="story"] {
+  &[data-type="historia"] {
     background: var(--success-bg);
     color: var(--success);
   }
   
-  &[data-type="epic"] {
+  &[data-type="épica"] {
+    background: var(--warning-bg);
+    color: var(--warning);
+  }
+
+  &[data-type="mejora"] {
+    background: var(--info-bg);
+    color: var(--info);
+  }
+
+  &[data-type="tarea"] {
+    background: var(--primary-bg);
+    color: var(--primary);
+  }
+
+  &[data-type="historia"] {
+    background: var(--success-bg);
+    color: var(--success);
+  }
+
+  &[data-type="épica"] {
     background: var(--warning-bg);
     color: var(--warning);
   }
@@ -1479,17 +1499,17 @@
     color: var(--danger);
   }
   
-  &[data-type="task"] {
+  &[data-type="tarea"] {
     background: var(--primary-bg);
     color: var(--primary);
   }
   
-  &[data-type="story"] {
+  &[data-type="historia"] {
     background: var(--success-bg);
     color: var(--success);
   }
   
-  &[data-type="epic"] {
+  &[data-type="épica"] {
     background: var(--warning-bg);
     color: var(--warning);
   }
@@ -1545,17 +1565,17 @@
     color: var(--danger);
   }
   
-  &[data-type="task"] {
+  &[data-type="tarea"] {
     background: var(--primary-bg);
     color: var(--primary);
   }
   
-  &[data-type="story"] {
+  &[data-type="historia"] {
     background: var(--success-bg);
     color: var(--success);
   }
   
-  &[data-type="epic"] {
+  &[data-type="épica"] {
     background: var(--warning-bg);
     color: var(--warning);
   }
