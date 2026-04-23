@@ -80,8 +80,13 @@ export class TicketService {
     return this.http.get<SprintResponse[]>(`${this.sprintUrl}/project/${projectId}/list`, { params: { project: projectId.toString() } });
   }
 
-  createSprint(sprint: CreateSprint): Observable<SprintResponse> {
-    return this.http.post<SprintResponse>(`${this.sprintUrl}/`, sprint);
+  createSprint(projectId: number, sprint: {
+    name: string;
+    start_date: string;
+    end_date: string;
+    status: 'planificado' | 'activo' | 'completado';
+  }): Observable<SprintResponse> {
+    return this.http.post<SprintResponse>(`${this.sprintUrl}/project/${projectId}/create/`, sprint);
   }
 
   updateSprint(id: number, sprint: Partial<CreateSprint>): Observable<SprintResponse> {

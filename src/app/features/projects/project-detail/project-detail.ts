@@ -425,17 +425,33 @@ export class ProjectDetailComponent implements OnInit {
 
   createSprint(): void {
     if (!this.project || !this.newSprint.name) return;
-    const sprintData: CreateSprint = {
-      project: this.project.id,
-      ...this.newSprint
+
+    if (this.newSprint.status === 'activo') {
+      const activeSprint = this.sprints.find(s => s.status === 'activo');
+      if (activeSprint) {
+        this.showToast('Ya existe un sprint activo. Finalízalo primero antes de crear otro.', 'error');
+        return;
+      }
+    }
+
+    const sprintData = {
+      name: this.newSprint.name,
+      start_date: this.newSprint.start_date,
+      end_date: this.newSprint.end_date,
+      status: this.newSprint.status
     };
-    this.ticketService.createSprint(sprintData).subscribe({
+
+    this.ticketService.createSprint(this.project.id, sprintData).subscribe({
       next: (sprint) => {
         this.sprints = [...this.sprints, sprint];
         this.showSprintModal = false;
         this.resetNewSprint();
+        this.showToast('Sprint creado correctamente', 'success');
       },
-      error: (err) => console.error('Error creating sprint:', err)
+      error: (err) => {
+        console.error('Error creating sprint:', err);
+        this.showToast('Error al crear el sprint', 'error');
+      }
     });
   }
 
