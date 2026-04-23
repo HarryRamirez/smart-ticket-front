@@ -22,14 +22,20 @@ export class TicketCreateComponent implements OnChanges {
   @Output() ticketUpdated = new EventEmitter<TicketResponse>();
   @Output() close = new EventEmitter<void>();
 
+  categories = ['Backend', 'Frontend', 'BaseDatos', 'Integraciones', 'UIUX', 'Documentacion', 'General'];
+  priorities = ['crítica', 'alta', 'media', 'baja', 'muy_baja'];
+  types = ['bug', 'tarea', 'historia', 'mejora', 'épica'];
+
   ticketForm: FormGroup = this.fb.group({
+    key: ['', [Validators.required]],
     title: ['', [Validators.required, Validators.minLength(5)]],
     description: ['', [Validators.required, Validators.minLength(10)]],
     category: ['', [Validators.required]],
-    priority: ['medium', [Validators.required]],
-    type: ['task', [Validators.required]],
-    summary: ['', [Validators.required, Validators.minLength(10)]],
-    suggested_solution: ['', [Validators.required]]
+    priority: ['media', [Validators.required]],
+    type: ['tarea', [Validators.required]],
+    summary: [''],
+    suggested_solution: [''],
+    due_date: ['', [Validators.required]]
   });
 
   isLoading = false;
@@ -39,18 +45,27 @@ export class TicketCreateComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['editingTicket'] && this.editingTicket) {
       this.ticketForm.patchValue({
+        key: this.editingTicket.key,
         title: this.editingTicket.title,
         description: this.editingTicket.description,
         category: this.editingTicket.category,
         priority: this.editingTicket.priority,
         type: this.editingTicket.type,
-        summary: this.editingTicket.summary,
-        suggested_solution: this.editingTicket.suggested_solution
+        summary: this.editingTicket.summary || '',
+        suggested_solution: this.editingTicket.suggested_solution || '',
+        due_date: this.editingTicket.due_date ? this.editingTicket.due_date.split('T')[0] : ''
       });
     } else if (changes['editingTicket'] && !this.editingTicket) {
       this.ticketForm.reset({
-        priority: 'medium',
-        type: 'task'
+        key: '',
+        title: '',
+        description: '',
+        category: '',
+        priority: 'media',
+        type: 'tarea',
+        summary: '',
+        suggested_solution: '',
+        due_date: ''
       });
     }
   }
@@ -61,9 +76,10 @@ export class TicketCreateComponent implements OnChanges {
       this.errorMessage = '';
       
       const statusId = this.initialStatusId || this.statuses[0]?.id || 1;
+      const formValue = this.ticketForm.value;
       
       if (this.editingTicket) {
-        this.ticketService.updateTicket(this.editingTicket.id, this.ticketForm.value).subscribe({
+        this.ticketService.updateTicket(this.editingTicket.id, formValue).subscribe({
           next: (ticket) => {
             this.ticketUpdated.emit(ticket);
             this.isLoading = false;
@@ -77,7 +93,7 @@ export class TicketCreateComponent implements OnChanges {
         });
       } else {
         const ticketData: CreateTicket = {
-          ...this.ticketForm.value,
+          ...formValue,
           project: this.projectId,
           status: statusId,
           labels: []

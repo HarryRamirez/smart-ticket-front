@@ -11,6 +11,16 @@
         }
 
         <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+          <!-- Key -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Key <span class="text-danger">*</span></label>
+            <input type="text" formControlName="key" class="form-control" 
+                   placeholder="Ej: PROJ-1" [class.is-invalid]="isFieldInvalid('key')">
+            @if (isFieldInvalid('key')) {
+              <div class="invalid-feedback">El key es requerido.</div>
+            }
+          </div>
+
           <!-- Title -->
           <div class="mb-4">
             <label class="form-label fw-semibold">Título del Ticket <span class="text-danger">*</span></label>
@@ -51,10 +61,9 @@
               <label class="form-label fw-semibold">Categoría <span class="text-danger">*</span></label>
               <select formControlName="category" class="form-select" [class.is-invalid]="isFieldInvalid('category')">
                 <option value="">Seleccionar...</option>
-                <option value="frontend">Frontend</option>
-                <option value="backend">Backend</option>
-                <option value="design">Diseño</option>
-                <option value="other">Otro</option>
+                @for (cat of categories; track cat) {
+                  <option [value]="cat">{{ cat }}</option>
+                }
               </select>
             </div>
 
@@ -62,10 +71,10 @@
             <div class="col-md-4">
               <label class="form-label fw-semibold">Tipo <span class="text-danger">*</span></label>
               <select formControlName="type" class="form-select" [class.is-invalid]="isFieldInvalid('type')">
-                <option value="task">Tarea</option>
-                <option value="bug">Error (Bug)</option>
-                <option value="story">Historia</option>
-                <option value="improvement">Mejora</option>
+                <option value="">Seleccionar...</option>
+                @for (t of types; track t) {
+                  <option [value]="t">{{ t }}</option>
+                }
               </select>
             </div>
 
@@ -73,10 +82,10 @@
             <div class="col-md-4">
               <label class="form-label fw-semibold">Prioridad <span class="text-danger">*</span></label>
               <select formControlName="priority" class="form-select" [class.is-invalid]="isFieldInvalid('priority')">
-                <option value="low">Baja</option>
-                <option value="medium">Media</option>
-                <option value="high">Alta</option>
-                <option value="urgent">Urgente</option>
+                <option value="">Seleccionar...</option>
+                @for (p of priorities; track p) {
+                  <option [value]="p">{{ p }}</option>
+                }
               </select>
             </div>
           </div>
@@ -85,21 +94,24 @@
 
           <!-- Summary (AI Target) -->
           <div class="mb-4">
-            <label class="form-label fw-semibold">Resumen <span class="text-danger">*</span></label>
+            <label class="form-label fw-semibold">Resumen</label>
             <input type="text" formControlName="summary" class="form-control" 
-                   placeholder="Un resumen corto generado por la IA o manualmente" [class.is-invalid]="isFieldInvalid('summary')">
-            @if (isFieldInvalid('summary')) {
-              <div class="invalid-feedback">El resumen es requerido.</div>
-            }
+                   placeholder="Un resumen corto generado por la IA o manualmente">
           </div>
 
           <!-- Suggested Solution (AI Target) -->
           <div class="mb-4">
-            <label class="form-label fw-semibold">Solución Sugerida <span class="text-danger">*</span></label>
+            <label class="form-label fw-semibold">Solución Sugerida</label>
             <textarea formControlName="suggested_solution" class="form-control" rows="3" 
-                      placeholder="¿Cómo se podría solucionar esto?" [class.is-invalid]="isFieldInvalid('suggested_solution')"></textarea>
-            @if (isFieldInvalid('suggested_solution')) {
-              <div class="invalid-feedback">La solución sugerida es requerida.</div>
+                      placeholder="¿Cómo se podría solucionar esto?"></textarea>
+          </div>
+
+          <!-- Due Date -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Fecha Límite <span class="text-danger">*</span></label>
+            <input type="date" formControlName="due_date" class="form-control" [class.is-invalid]="isFieldInvalid('due_date')">
+            @if (isFieldInvalid('due_date')) {
+              <div class="invalid-feedback">La fecha límite es requerida.</div>
             }
           </div>
 
@@ -110,7 +122,7 @@
                 <span class="spinner-border spinner-border-sm me-2"></span>
                 Guardando...
               } @else {
-                Crear Ticket
+                {{ editingTicket ? 'Guardar Cambios' : 'Crear Ticket' }}
               }
             </button>
           </div>

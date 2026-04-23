@@ -183,12 +183,13 @@ export interface TicketResponse {
   summary: string;
   suggested_solution: string;
   status: StatusResponse;
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  type: 'bug' | 'task' | 'story' | 'improvement';
+  priority: string;
+  type: string;
   reporter: UserResponse;
   assigned_to?: UserResponse;
   sprint?: number;
   labels: LabelResponse[];
+  due_date?: string;
   created_at: string;
   updated_at: string;
 }
