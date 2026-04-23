@@ -337,16 +337,51 @@
                     }
                   </div>
                 </div>
-                <div 
+<div 
                   class="sprint-tickets"
                   (dragover)="$event.preventDefault()"
                   (drop)="onDropToSprint($event, sprint.id)">
-                  @if (sprint.ticket_count > 0) {
-                    <div class="ticket-count-display">
-                      {{ sprint.ticket_count }} ticket(s)
-                    </div>
-                  }
-                  @if (sprint.ticket_count === 0) {
+                  @if ((sprint.tickets && sprint.tickets.length > 0) || getTicketsBySprint(sprint.id).length > 0) {
+                    @for (ticket of (sprint.tickets || getTicketsBySprint(sprint.id)); track ticket.id) {
+                      <div 
+                        class="sprint-ticket-card"
+                        draggable="true"
+                        (dragstart)="onDragStart($event, ticket)"
+                        (click)="editTicket(ticket)">
+                        <div class="sprint-ticket-main">
+                          <div class="sprint-ticket-type">
+                            <span class="ticket-type-icon" [attr.data-type]="ticket.type">
+                              <i class="bi" [ngClass]="getTypeIcon(ticket.type)"></i>
+                            </span>
+                            <span class="ticket-key-mini">{{ ticket.key }}</span>
+                          </div>
+                          <div class="sprint-ticket-content">
+                            <span class="sprint-ticket-title">{{ ticket.title }}</span>
+                            <div class="sprint-ticket-meta">
+                              <span class="priority-dot-sm" [style.background]="getPriorityColor(ticket.priority)"></span>
+                              <span class="status-tag-sm" [style.background]="getStatusBg(ticket.status.name)" [style.color]="getStatusColor(ticket.status.name)">
+                                {{ ticket.status.name }}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="sprint-ticket-right">
+                          @if (ticket.assigned_to) {
+                            <div 
+                              class="assignee-avatar-sm"
+                              [style.background-color]="getMemberColor(ticket.assigned_to.id)"
+                              [title]="ticket.assigned_to.email || ticket.assigned_to.first_name + ' ' + ticket.assigned_to.last_name">
+                              {{ getInitials(ticket.assigned_to) }}
+                            </div>
+                          } @else {
+                            <div class="assignee-avatar-sm unassigned">
+                              <i class="bi bi-person"></i>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    }
+                  } @else {
                     <div class="empty-sprint">
                       <i class="bi bi-inbox"></i>
                       <span>Arrastra tickets aquí</span>

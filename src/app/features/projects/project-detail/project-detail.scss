@@ -1751,3 +1751,111 @@
     background: var(--primary-hover);
   }
 }
+
+.sprint-ticket-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 12px;
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  cursor: grab;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: var(--primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.sprint-ticket-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.sprint-ticket-type {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 55px;
+}
+
+.sprint-ticket-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.sprint-ticket-title {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-primary);
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sprint-ticket-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.priority-dot-sm {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-tag-sm {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.sprint-ticket-right {
+  display: flex;
+  align-items: center;
+}
+
+.assignee-avatar-sm {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 600;
+
+  &.unassigned {
+    background: var(--surface-muted);
+    color: var(--ink-tertiary);
+    border: 1px dashed var(--border-emphasis);
+  }
+}
+
+.ticket-count-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-tertiary);
+  background: var(--surface-muted);
+  border-radius: 6px;
+}

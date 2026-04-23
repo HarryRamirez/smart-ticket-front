@@ -332,7 +332,9 @@ export class ProjectDetailComponent implements OnInit {
   getInitials(user: UserResponse | any): string {
     if (!user) return '';
     if (user.avatar) return user.avatar;
-    return (user.first_name?.[0] || '') + (user.last_name?.[0] || '');
+    const first = user.first_name || user.firstName || '';
+    const last = user.last_name || user.lastName || '';
+    return (first[0] || '') + (last[0] || '');
   }
 
 
@@ -376,25 +378,6 @@ export class ProjectDetailComponent implements OnInit {
   loadTicketsAndStatuses(): void {
     if (!this.project) return;
     this.isLoading = true;
-    /* forkJoin({
-      tickets: this.ticketService.getTicketsByProject(this.project.id),
-      statuses: this.ticketService.getStatusesByProject(this.project.id),
-      sprints: this.ticketService.getSprints(this.project.id)
-    }).subscribe({
-      next: (data) => {
-        this.tickets = data.tickets && data.tickets.length > 0 ? data.tickets : this.mockTickets;
-        this.statuses = data.statuses && data.statuses.length > 0 ? data.statuses : this.mockStatuses;
-        this.sprints = data.sprints || [];
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error loading tickets:', err);
-        this.tickets = this.mockTickets;
-        this.statuses = this.mockStatuses;
-        this.sprints = [];
-        this.isLoading = false;
-      }
-    }); */
     this.ticketService.getSprints(this.project.id).subscribe({
       next: (sprints) => {
         console.log('Sprints loaded:', sprints);
@@ -405,6 +388,24 @@ export class ProjectDetailComponent implements OnInit {
         console.error('Error loading sprints:', err);
         this.sprints = [];
         this.isLoading = false;
+      }
+    });
+    this.ticketService.getTicketsByProject(this.project.id).subscribe({
+      next: (tickets) => {
+        this.tickets = tickets && tickets.length > 0 ? tickets : this.mockTickets;
+      },
+      error: (err) => {
+        console.error('Error loading tickets:', err);
+        this.tickets = this.mockTickets;
+      }
+    });
+    this.ticketService.getStatusesByProject(this.project.id).subscribe({
+      next: (statuses) => {
+        this.statuses = statuses && statuses.length > 0 ? statuses : this.mockStatuses;
+      },
+      error: (err) => {
+        console.error('Error loading statuses:', err);
+        this.statuses = this.mockStatuses;
       }
     });
   }
