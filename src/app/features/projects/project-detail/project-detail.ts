@@ -833,6 +833,8 @@ export class ProjectDetailComponent implements OnInit {
     this.tickets = [...this.tickets, newTicket];
     this.showTicketModal = false;
     this.initialStatusForNewTicket = null;
+    this.showToast('Ticket creado correctamente', 'success');
+    this.loadBacklogTickets();
   }
 
   editTicket(ticket: TicketResponse): void {
