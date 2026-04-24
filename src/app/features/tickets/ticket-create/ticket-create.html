@@ -33,12 +33,13 @@
 
           <!-- Description -->
           <div class="mb-3">
-            <label class="form-label fw-semibold">Descripción Detallada <span class="text-danger">*</span></label>
+            <label class="form-label fw-semibold">Descripción <span class="text-danger">*</span></label>
             <textarea formControlName="description" class="form-control" rows="4" 
                       placeholder="Describe el problema o la tarea con detalle..." [class.is-invalid]="isFieldInvalid('description')"></textarea>
             @if (isFieldInvalid('description')) {
               <div class="invalid-feedback">La descripción es requerida (mín. 10 caracteres).</div>
             }
+            <small class="text-muted d-block mt-1">Agrega la key (si ya la tienes), un título claro y descriptivo. Sé detallado en la descripción para que la IA genere mejores sugerencias para los campos restantes.</small>
           </div>
 
           <!-- AI Button -->
