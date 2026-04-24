@@ -36,8 +36,8 @@ export class TicketService {
     return this.http.get<TicketResponse>(`${this.apiUrl}/${id}/`);
   }
 
-  createTicket(ticket: CreateTicket): Observable<TicketResponse> {
-    return this.http.post<TicketResponse>(`${this.apiUrl}/`, ticket);
+  createTicket(projectId: number, ticket: CreateTicket): Observable<TicketResponse> {
+    return this.http.post<TicketResponse>(`${this.apiUrl}/project/${projectId}/create/`, ticket);
   }
 
   updateTicket(id: number, ticket: UpdateTicket): Observable<TicketResponse> {

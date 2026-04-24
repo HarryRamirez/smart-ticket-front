@@ -93,13 +93,18 @@ export class TicketCreateComponent implements OnChanges {
         });
       } else {
         const ticketData: CreateTicket = {
-          ...formValue,
-          project: this.projectId,
-          status: statusId,
-          labels: []
+          key: formValue.key,
+          title: formValue.title,
+          description: formValue.description,
+          category: formValue.category,
+          priority: formValue.priority,
+          type: formValue.type,
+          summary: formValue.summary || '',
+          suggested_solution: formValue.suggested_solution || '',
+          due_date: formValue.due_date || ''
         };
 
-        this.ticketService.createTicket(ticketData).subscribe({
+        this.ticketService.createTicket(this.projectId, ticketData).subscribe({
           next: (ticket) => {
             this.ticketCreated.emit(ticket);
             this.isLoading = false;

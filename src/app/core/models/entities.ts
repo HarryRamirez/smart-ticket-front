@@ -210,18 +210,15 @@ export interface backlogTicketsResponse {
 }
 
 export interface CreateTicket {
-  project: number;
+  key: string;
   title: string;
   description: string;
   category: string;
+  priority: string;
+  type: string;
   summary: string;
   suggested_solution: string;
-  status: number;
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  type: 'bug' | 'task' | 'story' | 'improvement';
-  assigned_to?: number;
-  sprint?: number;
-  labels: number[];
+  due_date?: string;
 }
 
 export interface UpdateTicket {
