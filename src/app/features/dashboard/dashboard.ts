@@ -58,13 +58,20 @@ export class DashboardComponent implements OnInit {
     this.stats.total = tickets.length;
     this.stats.pending = tickets.filter(t => t.status.name !== 'Done' && t.status.name !== 'Closed').length;
     this.stats.resolved = tickets.filter(t => t.status.name === 'Done' || t.status.name === 'Closed').length;
-    this.stats.urgent = tickets.filter(t => t.priority === 'urgent' || t.priority === 'high').length;
+    this.stats.urgent = tickets.filter(t => {
+      const p = t.priority?.toLowerCase();
+      return p === 'crítica' || p === 'urgent' || p === 'alta' || p === 'high';
+    }).length;
   }
 
   getPriorityClass(priority: string): string {
-    switch (priority) {
+    const p = priority?.toLowerCase();
+    switch (p) {
+      case 'crítica':
       case 'urgent': return 'text-danger fw-bold';
+      case 'alta':
       case 'high': return 'text-warning fw-bold';
+      case 'media':
       case 'medium': return 'text-primary';
       default: return 'text-muted';
     }

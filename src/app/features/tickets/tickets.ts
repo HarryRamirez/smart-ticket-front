@@ -51,9 +51,13 @@ export class TicketsComponent implements OnInit {
   }
 
   getPriorityBadgeClass(priority: string): string {
-    switch (priority) {
+    const p = priority?.toLowerCase();
+    switch (p) {
+      case 'crítica':
       case 'urgent': return 'bg-danger text-white';
+      case 'alta':
       case 'high': return 'bg-warning text-dark';
+      case 'media':
       case 'medium': return 'bg-primary text-white';
       default: return 'bg-secondary text-white';
     }

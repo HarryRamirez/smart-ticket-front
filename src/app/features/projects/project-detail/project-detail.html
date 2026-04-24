@@ -338,6 +338,7 @@
                     }
                   </div>
                 </div>
+                
 <div 
                   class="sprint-tickets"
                   (dragover)="$event.preventDefault()"
@@ -359,9 +360,12 @@
                           <div class="sprint-ticket-content">
                             <span class="sprint-ticket-title">{{ ticket.title }}</span>
                             <div class="sprint-ticket-meta">
-                              <span class="priority-dot-sm" [style.background]="getPriorityColor(ticket.priority)"></span>
-                              <span class="status-tag-sm" [style.background]="getStatusBg(ticket.status.name)" [style.color]="getStatusColor(ticket.status.name)">
-                                {{ ticket.status.name }}
+                              <span class="priority-tag-sm" [style.border-color]="getPriorityColor(ticket.priority)" [style.color]="getPriorityColor(ticket.priority)">
+                                <span class="priority-dot-sm" [style.background]="getPriorityColor(ticket.priority)"></span>
+                                {{ticket.priority}}
+                              </span>
+                              <span class="status-tag-sm" [style.background]=" 'var(--primary-bg)' " [style.color]=" 'var(--primary)' ">
+                                {{ ticket.status }}
                               </span>
                             </div>
                           </div>
@@ -445,9 +449,11 @@
                         <span class="priority-dot" [style.background]="getPriorityColor(ticket.priority)"></span>
                         {{ ticket.priority }}
                       </span>
-                      <span class="status-tag" [style.background]="getStatusBg(ticket.status)" [style.color]="getStatusColor(ticket.status)">
+                      @if(ticket.status != null) {
+                      <span class="status-tag" [style.background]=" 'var(--primary-bg)' "  [style.color]=" 'var(--primary)' ">
                         {{ ticket.status }}
                       </span>
+                      }
                     </div>
                   </div>
                 </div>
@@ -528,7 +534,7 @@
               <div class="board-column">
                 <div class="column-header">
                   <div class="column-title-wrap">
-                    <span class="column-indicator" [style.background]="getStatusColor(status.name)"></span>
+                    <span class="column-indicator" [style.background]=" 'var(--primary-bg)' "></span>
                     <h6 class="column-title">{{ status.name }}</h6>
                     <span class="column-count">{{ getTicketsByStatus(status.id).length }}</span>
                   </div>

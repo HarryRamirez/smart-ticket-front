@@ -578,24 +578,42 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   getPriorityOrder(priority: string): number {
-    const order: Record<string, number> = { urgent: 0, high: 1, medium: 2, low: 3, 'very low': 4 };
-    return order[priority] ?? 5;
+    const p = priority?.toLowerCase();
+    const order: Record<string, number> = {
+      'crítica': 0, 'urgente': 0, urgent: 0,
+      'alta': 1, high: 1,
+      'media': 2, medium: 2,
+      'baja': 3, low: 3,
+      'muy_baja': 4, 'very low': 4
+    };
+    return order[p] ?? 5;
   }
 
   getPriorityClass(priority: string): string {
-    switch (priority) {
+    const p = priority?.toLowerCase();
+    switch (p) {
+      case 'crítica':
+      case 'urgente':
       case 'urgent': return 'text-danger';
+      case 'alta':
       case 'high': return 'text-warning';
+      case 'media':
       case 'medium': return 'text-primary';
       default: return 'text-muted';
     }
   }
 
   getPriorityBadgeClass(priority: string): string {
-    switch (priority) {
+    const p = priority?.toLowerCase();
+    switch (p) {
+      case 'crítica':
+      case 'urgente':
       case 'urgent': return 'bg-danger-subtle text-danger';
+      case 'alta':
       case 'high': return 'bg-warning-subtle text-warning';
+      case 'media':
       case 'medium': return 'bg-primary-subtle text-primary';
+      case 'baja':
       case 'low': return 'bg-secondary-subtle text-muted';
       default: return 'bg-light text-muted';
     }
@@ -893,92 +911,28 @@ export class ProjectDetailComponent implements OnInit {
     this.initialStatusForNewTicket = null;
   }
 
-  getStatusBadgeClass(statusName: string): string {
-    switch (statusName.toLowerCase()) {
-      case 'done':
-      case 'completado':
-        return 'bg-success text-white';
-      case 'in progress':
-      case 'en progreso':
-        return 'bg-primary text-white';
-      case 'to do':
-      case 'por hacer':
-        return 'bg-secondary text-white';
-      default:
-        return 'bg-light text-dark';
-    }
-  }
-
-  getJiraPriorityStyle(priority: string): string {
-    const styles: Record<string, string> = {
-      highest: 'background: #ffebe6; color: #bf2600; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; text-transform: uppercase;',
-      critical: 'background: #ffebe6; color: #bf2600; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;',
-      urgent: 'background: #ffebe6; color: #de350b; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;',
-      high: 'background: #fff0b3; color: #172b4d; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;',
-      medium: 'background: #eae6ff; color: #403294; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;',
-      low: 'background: #ebecf0; color: #42526e; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;',
-      'very low': 'background: #ebecf0; color: #42526e; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;'
-    };
-    const key = priority?.toLowerCase() || '';
-    return styles[key] || styles['medium'];
-  }
-
-  getJiraStatusStyle(statusName: string): string {
-    const name = statusName?.toLowerCase() || '';
-    if (name.includes('done') || name.includes('completado')) {
-      return 'background: #e3fcef; color: #006644; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;';
-    }
-    if (name.includes('progress') || name.includes('progreso')) {
-      return 'background: #deebff; color: #0052cc; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;';
-    }
-    if (name.includes('review') || name.includes('revisión')) {
-      return 'background: #fff0b3; color: #172b4d; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;';
-    }
-    return 'background: #ebecf0; color: #42526e; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600;';
-  }
 
   getPriorityColor(priority: string): string {
+    const p = priority?.toLowerCase();
     const colors: Record<string, string> = {
-      highest: '#DC2626',
       critical: '#DC2626',
-      urgent: '#EA580C',
+      crítica: '#EA580C',
+      alta: '#CA8A04',
       high: '#CA8A04',
+      media: '#7C3AED',
       medium: '#7C3AED',
+      baja: '#64748B',
       low: '#64748B',
+      muy_baja: '#94A3B8',
       'very low': '#94A3B8'
     };
-    return colors[priority?.toLowerCase() || ''] || '#64748B';
+    return colors[p || ''] || '#64748B';
   }
 
-  getStatusBg(statusName: string): string {
-    const name = statusName?.toLowerCase() || '';
-    if (name.includes('done') || name.includes('completado') || name.includes('cerrado')) {
-      return 'var(--success-bg)';
-    }
-    if (name.includes('progress') || name.includes('progreso') || name.includes('trabajando')) {
-      return 'var(--primary-bg)';
-    }
-    if (name.includes('review') || name.includes('revisión') || name.includes('test')) {
-      return 'var(--warning-bg)';
-    }
-    return 'var(--surface-muted)';
-  }
 
-  getStatusColor(statusName: string): string {
-    const name = statusName?.toLowerCase() || '';
-    if (name.includes('done') || name.includes('completado') || name.includes('cerrado')) {
-      return 'var(--success)';
-    }
-    if (name.includes('progress') || name.includes('progreso') || name.includes('trabajando')) {
-      return 'var(--primary)';
-    }
-    if (name.includes('review') || name.includes('revisión') || name.includes('test')) {
-      return 'var(--warning)';
-    }
-    return 'var(--ink-secondary)';
-  }
-
+  
   getTypeIcon(type: string): string {
+    const t = type?.toLowerCase();
     const icons: Record<string, string> = {
       bug: 'bi-bug',
       tarea: 'bi-check2-square',
@@ -986,8 +940,9 @@ export class ProjectDetailComponent implements OnInit {
       mejora: 'bi-arrow-up-circle',
       épica: 'bi-lightning'
     };
-    return icons[type?.toLowerCase() || ''] || 'bi-circle';
+    return icons[t || ''] || 'bi-circle';
   }
+  
 
   formatActivityMessage(message: string): string {
     if (!message) return '';
