@@ -440,12 +440,12 @@
                     <span class="ticket-type-icon" [attr.data-type]="ticket.type">
                       <i class="bi" [ngClass]="getTypeIcon(ticket.type)"></i>
                     </span>
-                    <span class="ticket-key">{{ ticket.key }}</span>
+                    <span class="ticket-key d-block">{{ ticket.key }}</span>
                   </div>
                   <div class="ticket-content">
                     <h4 class="ticket-title">{{ ticket.title }}</h4>
                     <div class="ticket-meta">
-                      <span class="priority-tag" [style.border-color]="getPriorityColor(ticket.priority)" [style.color]="getPriorityColor(ticket.priority)">
+                      <span class="priority-tag" [style.background]="getPriorityColor(ticket.priority) + '20'" [style.border-color]="getPriorityColor(ticket.priority)" [style.color]="getPriorityColor(ticket.priority)">
                         <span class="priority-dot" [style.background]="getPriorityColor(ticket.priority)"></span>
                         {{ ticket.priority }}
                       </span>

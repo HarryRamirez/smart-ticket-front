@@ -1188,7 +1188,7 @@
 }
 
 .priority-tag {
-  background: transparent;
+  border-width: 1px;
 }
 
 .status-tag {
@@ -1818,12 +1818,19 @@
   flex-shrink: 0;
 }
 .priority-tag-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 10px;
   font-weight: 500;
   padding: 2px 6px;
   border-radius: 3px;
+  border: 1px solid;
 }
 .status-tag-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 10px;
   font-weight: 500;
   padding: 2px 6px;
