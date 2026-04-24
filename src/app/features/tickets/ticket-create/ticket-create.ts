@@ -23,16 +23,16 @@ export class TicketCreateComponent implements OnChanges {
   @Output() close = new EventEmitter<void>();
 
   categories = ['Backend', 'Frontend', 'BaseDatos', 'Integraciones', 'UIUX', 'Documentacion', 'General'];
-  priorities = ['crítica', 'alta', 'media', 'baja', 'muy_baja'];
-  types = ['bug', 'tarea', 'historia', 'mejora', 'épica'];
+  priorities = ['Crítica', 'Alta', 'Media', 'Baja', 'Muy_baja'];
+  types = ['Bug', 'Tarea', 'Historia', 'Mejora', 'Épica'];
 
   ticketForm: FormGroup = this.fb.group({
     key: ['', [Validators.required]],
     title: ['', [Validators.required, Validators.minLength(5)]],
     description: ['', [Validators.required, Validators.minLength(10)]],
     category: ['', [Validators.required]],
-    priority: ['media', [Validators.required]],
-    type: ['tarea', [Validators.required]],
+    priority: ['', [Validators.required]],
+    type: ['', [Validators.required]],
     summary: [''],
     suggested_solution: [''],
     due_date: ['', [Validators.required]]
@@ -61,8 +61,8 @@ export class TicketCreateComponent implements OnChanges {
         title: '',
         description: '',
         category: '',
-        priority: 'media',
-        type: 'tarea',
+        priority: '',
+        type: '',
         summary: '',
         suggested_solution: '',
         due_date: ''
@@ -118,20 +118,39 @@ export class TicketCreateComponent implements OnChanges {
   }
 
   generateWithAi() {
+    const title = this.ticketForm.get('title')?.value;
     const description = this.ticketForm.get('description')?.value;
+    
+    if (!title || title.length < 5) {
+      this.errorMessage = 'Por favor, ingresa un título válido (mín. 5 caracteres) antes de generar con IA.';
+      return;
+    }
+    
     if (!description || description.length < 10) {
-      alert('Por favor, ingresa una descripción más detallada para que la IA pueda trabajar.');
+      this.errorMessage = 'Por favor, ingresa una descripción más detallada para que la IA pueda trabajar.';
       return;
     }
 
     this.isAiGenerating = true;
-    setTimeout(() => {
-      this.ticketForm.patchValue({
-        summary: `Resumen IA: ${description.substring(0, 50)}...`,
-        suggested_solution: 'Solución sugerida por IA: Se recomienda revisar la configuración del módulo y validar las entradas de datos según el log de errores.'
-      });
-      this.isAiGenerating = false;
-    }, 2000);
+    this.errorMessage = '';
+    
+    this.ticketService.generateTicketWithAi(title, description).subscribe({
+      next: (response) => {
+        this.ticketForm.patchValue({
+          category: response.category,
+          priority: response.priority,
+          type: response.type,
+          summary: response.summary,
+          suggested_solution: response.suggested_solution
+        });
+        this.isAiGenerating = false;
+      },
+      error: (err) => {
+        this.isAiGenerating = false;
+        this.errorMessage = 'Error al generar con IA. Intenta de nuevo.';
+        console.error(err);
+      }
+    });
   }
 
   isFieldInvalid(field: string): boolean {

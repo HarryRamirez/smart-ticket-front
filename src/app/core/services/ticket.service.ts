@@ -48,6 +48,22 @@ export class TicketService {
     return this.http.delete<void>(`${this.apiUrl}/${id}/`);
   }
 
+  generateTicketWithAi(title: string, description: string): Observable<{
+    category: string;
+    priority: string;
+    type: string;
+    summary: string;
+    suggested_solution: string;
+  }> {
+    return this.http.post<{
+      category: string;
+      priority: string;
+      type: string;
+      summary: string;
+      suggested_solution: string;
+    }>(`${this.apiUrl}/generate/`, { title, description });
+  }
+
   getStatuses(): Observable<StatusResponse[]> {
     return this.http.get<StatusResponse[]>(`${this.statusUrl}/`);
   }
