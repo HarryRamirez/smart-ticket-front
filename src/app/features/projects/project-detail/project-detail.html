@@ -386,7 +386,7 @@
                         </div>
                       </div>
                     }
-                  } @else {
+                  } @else if((sprint.tickets && sprint.tickets.length === 0) || getTicketsBySprint(sprint.id).length === 0 || sprint.tickets === []) {
                     <div class="empty-sprint">
                       <i class="bi bi-inbox"></i>
                       <span>Arrastra tickets aquí</span>
@@ -434,6 +434,7 @@
               <div 
                 class="ticket-card"
                 draggable="true"
+                (dragstart)="onDragStart($event, ticket)"
 >
                 <div class="ticket-main">
                   <div class="ticket-type-col">
@@ -544,7 +545,7 @@
                 </div>
                 <div class="column-content" 
                      (dragover)="$event.preventDefault()" 
-                     (drop)="onDrop($event, status.id)">
+                     (drop)="onDropToSprint($event, status.id)">
                   @for (ticket of getTicketsByStatus(status.id); track ticket.id) {
                     <div class="board-card" 
                          draggable="true" 

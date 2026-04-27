@@ -508,12 +508,35 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   moveTicketToSprint(ticketId: number, sprintId: number | null): void {
-    this.ticketService.moveTicketToSprint(ticketId, sprintId).subscribe({
-      next: () => {
-        this.tickets = this.tickets.map(t => t.id === ticketId ? { ...t, sprint: sprintId ?? undefined } : t);
-      },
-      error: (err) => console.error('Error moving ticket to sprint:', err)
-    });
+    if (!this.project) return;
+
+    const sprintName = sprintId
+      ? this.sprints.find(s => s.id === sprintId)?.name 
+      : 'backlog';
+
+    this.ticketService
+      .assignTicketToSprint(ticketId, this.project.id, sprintId)
+      .subscribe({
+        next: () => {
+          // 🔄 Recargar todo desde backend (estado real)
+          this.loadTicketsAndStatuses();
+          this.loadBacklogTickets();
+          console.log("Para el DROP: ", ticketId, this.project?.id);
+          // ✅ Feedback al usuario
+          this.showToast(
+            `Ticket movido al ${sprintName || 'backlog'} correctamente`,
+            'success'
+          );
+        },
+        error: (err) => {
+          console.error('Error moving ticket:', err?.error || err);
+
+          this.showToast(
+            err?.error?.detail || 'Error al mover el ticket',
+            'error'
+          );
+        }
+      });
   }
 
   moveTicketToStatus(ticketId: number, statusId: number): void {
@@ -664,20 +687,10 @@ export class ProjectDetailComponent implements OnInit {
     this.editingStatusName = '';
   }
 
-  onDragStart(event: DragEvent, ticket: TicketResponse): void {
-    this.draggedTicket = ticket;
-    if (event.dataTransfer) {
-      event.dataTransfer.effectAllowed = 'move';
-    }
+  onDragStart(event: DragEvent, ticket: any) {
+    event.dataTransfer?.setData('ticketId', ticket.id.toString());
   }
-
-  onDrop(event: DragEvent, statusId: number): void {
-    event.preventDefault();
-    if (this.draggedTicket) {
-      this.moveTicketToStatus(this.draggedTicket.id, statusId);
-      this.draggedTicket = null;
-    }
-  }
+  
 
   openCreateTicketForStatus(statusId: number): void {
     this.initialStatusForNewTicket = statusId;
@@ -879,18 +892,26 @@ export class ProjectDetailComponent implements OnInit {
 
   onDropToSprint(event: DragEvent, sprintId: number): void {
     event.preventDefault();
-    if (this.draggedTicket) {
-      this.moveTicketToSprint(this.draggedTicket.id, sprintId);
-      this.draggedTicket = null;
-    }
+
+    const ticketId = Number(event.dataTransfer?.getData('ticketId'));
+
+    console.log('DROP:', ticketId, sprintId); // debug
+
+    if (!ticketId) return;
+
+    this.moveTicketToSprint(ticketId, sprintId);
   }
 
   onDropToBacklog(event: DragEvent): void {
     event.preventDefault();
-    if (this.draggedTicket) {
-      this.moveTicketToSprint(this.draggedTicket.id, null);
-      this.draggedTicket = null;
-    }
+
+    const ticketId = Number(event.dataTransfer?.getData('ticketId'));
+
+    console.log('DROP BACKLOG:', ticketId); // debug
+
+    if (!ticketId) return;
+
+    this.moveTicketToSprint(ticketId, null);
   }
 
   deleteTicket(ticketId: number): void {

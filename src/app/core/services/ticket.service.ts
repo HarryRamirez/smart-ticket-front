@@ -134,4 +134,9 @@ export class TicketService {
     }
     return this.http.get<PaginatedBacklogResponse>(`${this.apiUrl}/project/${projectId}/backlog/`, { params: httpParams });
   }
+
+  
+  assignTicketToSprint(ticketId: number, projectId: number, sprintId: number | null): Observable<TicketResponse> { 
+    return this.http.patch<TicketResponse>(`${this.apiUrl}/${ticketId}/project/${projectId}/assign/`, { sprint_id: sprintId }); 
+  }
 }
