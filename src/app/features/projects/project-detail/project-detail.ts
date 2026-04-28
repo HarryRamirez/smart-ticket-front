@@ -882,9 +882,12 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   startSprint(sprint: SprintResponse): void {
-    this.ticketService.updateSprint(sprint.id, { is_active: true, status: 'activo' }).subscribe({
+    if (!this.project) return;
+    this.ticketService.updateSprintStatus(sprint.id, this.project.id, 'activo').subscribe({
       next: () => {
         this.sprints = this.sprints.map(s => s.id === sprint.id ? { ...s, is_active: true, status: 'activo' } : s);
+        this.loadTicketsAndStatuses();
+        this.showToast('Sprint iniciado correctamente', 'success');
       },
       error: (err) => console.error('Error starting sprint:', err)
     });

@@ -386,7 +386,7 @@
                         </div>
                       </div>
                     }
-                  } @else if((sprint.tickets && sprint.tickets.length === 0) || getTicketsBySprint(sprint.id).length === 0 || sprint.tickets === []) {
+                  } @else if(!sprint.tickets || sprint.tickets.length === 0) {
                     <div class="empty-sprint">
                       <i class="bi bi-inbox"></i>
                       <span>Arrastra tickets aquí</span>

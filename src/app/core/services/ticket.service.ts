@@ -139,4 +139,8 @@ export class TicketService {
   assignTicketToSprint(ticketId: number, projectId: number, sprintId: number | null): Observable<TicketResponse> { 
     return this.http.patch<TicketResponse>(`${this.apiUrl}/${ticketId}/project/${projectId}/assign/`, { sprint_id: sprintId }); 
   }
+
+  updateSprintStatus(sprintId: number, projectId: number, status: 'activo' | 'planificado' | 'completado'): Observable<SprintResponse> {
+    return this.http.patch<SprintResponse>(`${this.sprintUrl}/${sprintId}/project/${projectId}/update-status/`, { status });
+  }
 }
