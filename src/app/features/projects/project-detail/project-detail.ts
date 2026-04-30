@@ -18,7 +18,8 @@ import {
   CreateStatus,
   ActivityProject,
   DueTickets,
-  backlogTicketsResponse
+  backlogTicketsResponse,
+  StatusWithTickets
 } from '../../../core/models/entities';
 import { TicketCreateComponent } from '../../tickets/ticket-create/ticket-create';
 import { forkJoin } from 'rxjs';
@@ -77,6 +78,7 @@ export class ProjectDetailComponent implements OnInit {
   };
 
   backlogFilter = '';
+  boardSearchTerm = '';
   selectedSprintId: number | null = null;
   showCreateTicketForStatus: number | null = null;
   initialStatusForNewTicket: number | null = null;
@@ -103,6 +105,8 @@ export class ProjectDetailComponent implements OnInit {
   backlogTotalPages = 1;
   backlogLoading = false;
   private backlogSearchTimeout: any;
+  
+  statusesWithTickets: StatusWithTickets[] = [];
   
   mockUsers: UserResponse[] = [
     { id: 10, username: 'juan.perez', email: 'juan.perez@empresa.com', first_name: 'Juan', last_name: 'Pérez' },
@@ -380,11 +384,11 @@ export class ProjectDetailComponent implements OnInit {
 
   setTab(tab: 'summary' | 'backlog' | 'board'): void {
     this.activeTab = tab;
-    if ((tab === 'backlog' || tab === 'board') && this.tickets.length === 0) {
-      this.loadTicketsAndStatuses();
-    }
     if (tab === 'backlog' && this.project) {
       this.loadBacklogTickets();
+    }
+    if (tab === 'board' && this.project) {
+      this.loadTicketsByStatus(true, this.boardSearchTerm);
     }
   }
 
@@ -403,22 +407,31 @@ export class ProjectDetailComponent implements OnInit {
         this.isLoading = false;
       }
     });
-    this.ticketService.getTicketsByProject(this.project.id).subscribe({
-      next: (tickets) => {
-        this.tickets = tickets && tickets.length > 0 ? tickets : this.mockTickets;
+  }
+
+  loadTicketsByStatus(paginated = true, searchTerm = ''): void {
+    if (!this.project) return;
+    this.isLoading = true;
+    this.ticketService.getTicketsByStatus(this.project.id, {
+      paginated,
+      search_term: searchTerm || undefined
+    }).subscribe({
+      next: (data) => {
+        this.statusesWithTickets = data && data.length > 0 ? data : [];
+        this.statuses = this.statusesWithTickets.map(s => ({
+          id: s.id,
+          name: s.name,
+          order: s.order,
+          created_by: {} as UserResponse,
+          is_active: true,
+          project: this.project!.id
+        }));
+        this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error loading tickets:', err);
-        this.tickets = this.mockTickets;
-      }
-    });
-    this.ticketService.getStatusesByProject(this.project.id).subscribe({
-      next: (statuses) => {
-        this.statuses = statuses && statuses.length > 0 ? statuses : this.mockStatuses;
-      },
-      error: (err) => {
-        console.error('Error loading statuses:', err);
-        this.statuses = this.mockStatuses;
+        console.error('Error loading tickets by status:', err);
+        this.statusesWithTickets = [];
+        this.isLoading = false;
       }
     });
   }
@@ -851,6 +864,10 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   getTicketsByStatus(statusId: number): TicketResponse[] {
+    const statusData = this.statusesWithTickets.find(s => s.id === statusId);
+    if (statusData && statusData.tickets) {
+      return statusData.tickets as unknown as TicketResponse[];
+    }
     return this.tickets.filter(t => t.status.id === statusId);
   }
 

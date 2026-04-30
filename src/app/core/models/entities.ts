@@ -303,3 +303,33 @@ export interface UpdateAISuggestion {
     results: backlogTicketsResponse[];
   }
 
+export interface TicketBoardItem {
+  id: number;
+  key: string;
+  title: string;
+  description: string;
+  category: string;
+  priority: string;
+  type: string;
+  summary: string;
+  suggested_solution: string;
+  is_active: boolean;
+  assigned_to: {
+    id: number;
+    email: string;
+    avatar?: string;
+  };
+  due_date?: string;
+  created_by: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface StatusWithTickets {
+  id: number;
+  name: string;
+  order: number;
+  tickets: TicketBoardItem[];
+  paginated?: boolean;
+}
+

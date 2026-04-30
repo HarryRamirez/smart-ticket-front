@@ -9,7 +9,8 @@ import {
   CreateStatus,
   SprintResponse,
   CreateSprint,
-  PaginatedBacklogResponse
+  PaginatedBacklogResponse,
+  StatusWithTickets
 } from '../models/entities';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
@@ -142,5 +143,17 @@ export class TicketService {
 
   updateSprintStatus(sprintId: number, projectId: number, status: 'activo' | 'planificado' | 'completado'): Observable<SprintResponse> {
     return this.http.patch<SprintResponse>(`${this.sprintUrl}/${sprintId}/project/${projectId}/update-status/`, { status });
+  }
+
+  getTicketsByStatus(projectId: number, params?: {
+    paginated?: boolean;
+    search_term?: string;
+  }): Observable<StatusWithTickets[]> {
+    let httpParams = new HttpParams();
+    if (params) {
+      if (params.paginated !== undefined) httpParams = httpParams.set('paginated', params.paginated.toString());
+      if (params.search_term) httpParams = httpParams.set('search_term', params.search_term);
+    }
+    return this.http.get<StatusWithTickets[]>(`${this.apiUrl}/project/${projectId}/tickets_by_status/`, { params: httpParams });
   }
 }
