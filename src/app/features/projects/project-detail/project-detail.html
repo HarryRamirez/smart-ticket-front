@@ -570,6 +570,10 @@
                           <div class="assignee-sm" [style.background]="getMemberColor(ticket.assigned_to.id)" [title]="ticket.assigned_to.email">
                             {{ ticket.assigned_to.avatar }}
                           </div>
+                        } @else {
+                          <div class="assignee-sm unassigned">
+                            <i class="bi bi-person"></i>
+                          </div>
                         }
                       </div>
                     </div>
