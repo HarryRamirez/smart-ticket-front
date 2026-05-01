@@ -11,6 +11,28 @@
     <div class="col-md-3">
       <div class="metric-card bg-white p-4 rounded-3 d-flex align-items-center">
         <div class="metric-icon rounded-2 me-3" style="background: var(--primary-bg); color: var(--primary);">
+          <i class="bi bi-folder fs-5"></i>
+        </div>
+        <div>
+          <div class="text-muted-custom smaller fw-bold text-uppercase ls-1">Proyectos</div>
+          <h3 class="fw-bold text-main mb-0">{{ projects.length }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="metric-card bg-white p-4 rounded-3 d-flex align-items-center">
+        <div class="metric-icon rounded-2 me-3" style="background: var(--warning-bg); color: var(--warning);">
+          <i class="bi bi-person-check fs-5"></i>
+        </div>
+        <div>
+          <div class="text-muted-custom smaller fw-bold text-uppercase ls-1">Mis Tickets</div>
+          <h3 class="fw-bold text-main mb-0">{{ stats.myTickets }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="metric-card bg-white p-4 rounded-3 d-flex align-items-center">
+        <div class="metric-icon rounded-2 me-3" style="background: var(--success-bg); color: var(--success);">
           <i class="bi bi-ticket-perforated fs-5"></i>
         </div>
         <div>
@@ -21,34 +43,12 @@
     </div>
     <div class="col-md-3">
       <div class="metric-card bg-white p-4 rounded-3 d-flex align-items-center">
-        <div class="metric-icon rounded-2 me-3" style="background: var(--warning-bg); color: var(--warning);">
-          <i class="bi bi-clock-history fs-5"></i>
-        </div>
-        <div>
-          <div class="text-muted-custom smaller fw-bold text-uppercase ls-1">Pendientes</div>
-          <h3 class="fw-bold text-main mb-0">{{ stats.pending }}</h3>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="metric-card bg-white p-4 rounded-3 d-flex align-items-center">
-        <div class="metric-icon rounded-2 me-3" style="background: var(--success-bg); color: var(--success);">
-          <i class="bi bi-check2-circle fs-5"></i>
-        </div>
-        <div>
-          <div class="text-muted-custom smaller fw-bold text-uppercase ls-1">Resueltos</div>
-          <h3 class="fw-bold text-main mb-0">{{ stats.resolved }}</h3>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="metric-card bg-white p-4 rounded-3 d-flex align-items-center">
         <div class="metric-icon rounded-2 me-3" style="background: var(--danger-bg); color: var(--danger);">
-          <i class="bi bi-exclamation-triangle fs-5"></i>
+          <i class="bi bi-person-dash fs-5"></i>
         </div>
         <div>
-          <div class="text-muted-custom smaller fw-bold text-uppercase ls-1">Urgentes</div>
-          <h3 class="fw-bold text-main mb-0">{{ stats.urgent }}</h3>
+          <div class="text-muted-custom smaller fw-bold text-uppercase ls-1">Sin Asignar</div>
+          <h3 class="fw-bold text-main mb-0">{{ stats.unassigned }}</h3>
         </div>
       </div>
     </div>

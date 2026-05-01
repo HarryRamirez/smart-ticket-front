@@ -27,11 +27,26 @@ export class DashboardComponent implements OnInit {
     total: 0,
     pending: 0,
     resolved: 0,
-    urgent: 0
+    urgent: 0,
+    myTickets: 0,
+    createdByMe: 0,
+    inReview: 0,
+    unassigned: 0
   };
 
+  currentUserId: number | null = null;
+
   ngOnInit() {
+    this.loadCurrentUser();
     this.loadDashboardData();
+  }
+
+  loadCurrentUser() {
+    const userStr = localStorage.getItem('user_data');
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      this.currentUserId = user.id;
+    }
   }
 
   loadDashboardData() {
@@ -44,7 +59,7 @@ export class DashboardComponent implements OnInit {
         this.projects = data.projects.results;
         this.allTickets = data.tickets;
         this.recentTickets = data.tickets.slice(0, 5);
-        this.calculateStats(data.tickets);
+        this.calculateStats(data.tickets, this.projects);
         this.isLoading = false;
       },
       error: (err) => {
@@ -54,14 +69,21 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  calculateStats(tickets: TicketResponse[]) {
+  calculateStats(tickets: TicketResponse[], projects: ProjectResponse[]) {
     this.stats.total = tickets.length;
-    this.stats.pending = tickets.filter(t => t.status.name !== 'Done' && t.status.name !== 'Closed').length;
-    this.stats.resolved = tickets.filter(t => t.status.name === 'Done' || t.status.name === 'Closed').length;
+    this.stats.pending = tickets.filter(t => t.status.name !== 'Done' && t.status.name !== 'Closed' && t.status.name !== 'Completado').length;
+    this.stats.resolved = tickets.filter(t => t.status.name === 'Done' || t.status.name === 'Closed' || t.status.name === 'Completado').length;
     this.stats.urgent = tickets.filter(t => {
       const p = t.priority?.toLowerCase();
       return p === 'crítica' || p === 'urgent' || p === 'alta' || p === 'high';
     }).length;
+    
+    if (this.currentUserId) {
+      this.stats.myTickets = tickets.filter(t => t.assigned_to?.id === this.currentUserId).length;
+      this.stats.createdByMe = tickets.filter(t => t.reporter?.id === this.currentUserId).length;
+    }
+    
+    this.stats.unassigned = tickets.filter(t => !t.assigned_to).length;
   }
 
   getPriorityClass(priority: string): string {
