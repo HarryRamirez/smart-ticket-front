@@ -303,6 +303,12 @@ export interface UpdateAISuggestion {
     results: backlogTicketsResponse[];
   }
 
+export interface AssignedTo {
+  id: number;
+  email: string;
+  avatar?: string;
+}
+
 export interface TicketBoardItem {
   id: number;
   key: string;
@@ -314,11 +320,7 @@ export interface TicketBoardItem {
   summary: string;
   suggested_solution: string;
   is_active: boolean;
-  assigned_to: {
-    id: number;
-    email: string;
-    avatar?: string;
-  };
+  assigned_to?: AssignedTo;
   due_date?: string;
   created_by: number;
   created_at: string;
@@ -331,5 +333,9 @@ export interface StatusWithTickets {
   order: number;
   tickets: TicketBoardItem[];
   paginated?: boolean;
+}
+
+export interface StatusWithTicketsResponse {
+  results: StatusWithTickets[];
 }
 

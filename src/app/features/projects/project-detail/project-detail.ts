@@ -416,8 +416,8 @@ export class ProjectDetailComponent implements OnInit {
       paginated,
       search_term: searchTerm || undefined
     }).subscribe({
-      next: (data) => {
-        this.statusesWithTickets = data && data.length > 0 ? data : [];
+      next: (response) => {
+        this.statusesWithTickets = response.results && response.results.length > 0 ? response.results : [];
         this.statuses = this.statusesWithTickets.map(s => ({
           id: s.id,
           name: s.name,

@@ -561,7 +561,7 @@
                       <div class="board-card-footer">
                         <span class="ticket-type-sm" [attr.data-type]="ticket.type">{{ ticket.type }}</span>
                         @if (ticket.assigned_to) {
-                          <div class="assignee-sm" [style.background]="getMemberColor(ticket.assigned_to.id)" [title]="ticket.assigned_to.first_name + ' ' + ticket.assigned_to.last_name">
+                          <div class="assignee-sm" [style.background]="getMemberColor(ticket.assigned_to.id)" [title]="ticket.assigned_to.email">
                             {{ ticket.assigned_to.avatar }}
                           </div>
                         } @else {
