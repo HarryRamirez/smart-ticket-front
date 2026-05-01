@@ -108,115 +108,15 @@ export class ProjectDetailComponent implements OnInit {
   
   statusesWithTickets: StatusWithTickets[] = [];
   
-  mockUsers: UserResponse[] = [
-    { id: 10, username: 'juan.perez', email: 'juan.perez@empresa.com', first_name: 'Juan', last_name: 'Pérez' },
-    { id: 11, username: 'ana.lopez', email: 'ana.lopez@empresa.com', first_name: 'Ana', last_name: 'López' },
-    { id: 12, username: 'carlos.martinez', email: 'carlos.martinez@empresa.com', first_name: 'Carlos', last_name: 'Martínez' },
-    { id: 13, username: 'maria.garcia', email: 'maria.garcia@empresa.com', first_name: 'María', last_name: 'García' },
-    { id: 14, username: 'luis.rodriguez', email: 'luis.rodriguez@empresa.com', first_name: 'Luis', last_name: 'Rodríguez' }
-  ];
+  
 
   currentUserEmail = '';
   currentUserId: number | null = null;
   currentUserRole: 'admin' | 'developer' | 'qa' | 'viewer' | null = null;
 
-  mockStatuses: StatusResponse[] = [
-    { id: 1, name: 'Por hacer', created_by: {} as UserResponse, order: 1, is_active: true, project: 1 },
-    { id: 2, name: 'En progreso', created_by: {} as UserResponse, order: 2, is_active: true, project: 1 },
-    { id: 3, name: 'En revisión', created_by: {} as UserResponse, order: 3, is_active: true, project: 1 },
-    { id: 4, name: 'Completado', created_by: {} as UserResponse, order: 4, is_active: true, project: 1 }
-  ];
+  
 
-  mockTickets: TicketResponse[] = [
-    {
-      id: 1, project: 1, key: 'PROJ-1', title: 'Implementar autenticación con JWT',
-      description: 'Implementar sistema de autenticación usando JWT tokens', category: 'Desarrollo',
-      summary: 'Auth JWT', suggested_solution: 'Usar angular-jwt', status: this.mockStatuses[0],
-      priority: 'high', type: 'task', reporter: { id: 1, username: 'juan.perez', email: 'juan.perez@empresa.com', first_name: 'Juan', last_name: 'Pérez' },
-      assigned_to: { id: 2, username: 'ana.lopez', email: 'ana.lopez@empresa.com', first_name: 'Ana', last_name: 'López' },
-      sprint: 1, labels: [], created_at: '2024-01-15T10:00:00Z', updated_at: '2024-01-15T10:00:00Z'
-    },
-    {
-      id: 2, project: 1, key: 'PROJ-2', title: 'Corregir bug en el formulario de login',
-      description: 'El formulario de login no valida correctamente el email', category: 'Bug',
-      summary: 'Bug login', suggested_solution: 'Revisar validación', status: this.mockStatuses[1],
-      priority: 'urgent', type: 'bug', reporter: { id: 3, username: 'carlos.martinez', email: 'carlos.martinez@empresa.com', first_name: 'Carlos', last_name: 'Martínez' },
-      assigned_to: { id: 1, username: 'juan.perez', email: 'juan.perez@empresa.com', first_name: 'Juan', last_name: 'Pérez' },
-      sprint: 1, labels: [], created_at: '2024-01-14T09:00:00Z', updated_at: '2024-01-14T09:00:00Z'
-    },
-    {
-      id: 3, project: 1, key: 'PROJ-3', title: ' Diseñar dashboard principal',
-      description: 'Crear mockups para el dashboard del proyecto', category: 'Diseño',
-      summary: 'UI Dashboard', suggested_solution: 'Figma', status: this.mockStatuses[2],
-      priority: 'medium', type: 'story', reporter: { id: 1, username: 'juan.perez', email: 'juan.perez@empresa.com', first_name: 'Juan', last_name: 'Pérez' },
-      assigned_to: { id: 4, username: 'maria.garcia', email: 'maria.garcia@empresa.com', first_name: 'María', last_name: 'García' },
-      sprint: 1, labels: [], created_at: '2024-01-13T14:00:00Z', updated_at: '2024-01-13T14:00:00Z'
-    },
-    {
-      id: 4, project: 1, key: 'PROJ-4', title: 'Configurar pipeline de CI/CD',
-      description: 'Setup GitHub Actions para build y deploy automático', category: 'DevOps',
-      summary: 'CI/CD', suggested_solution: 'GitHub Actions', status: this.mockStatuses[3],
-      priority: 'high', type: 'task', reporter: { id: 2, username: 'ana.lopez', email: 'ana.lopez@empresa.com', first_name: 'Ana', last_name: 'López' },
-      assigned_to: { id: 5, username: 'luis.rodriguez', email: 'luis.rodriguez@empresa.com', first_name: 'Luis', last_name: 'Rodríguez' },
-      sprint: 1, labels: [], created_at: '2024-01-12T11:00:00Z', updated_at: '2024-01-12T11:00:00Z'
-    },
-    {
-      id: 5, project: 1, key: 'PROJ-5', title: 'Optimizar consultas de base de datos',
-      description: 'Las queries del dashboard están lentas', category: 'Backend',
-      summary: 'Performance DB', suggested_solution: 'Agregar índices', status: this.mockStatuses[0],
-      priority: 'medium', type: 'improvement', reporter: { id: 3, username: 'carlos.martinez', email: 'carlos.martinez@empresa.com', first_name: 'Carlos', last_name: 'Martínez' },
-      sprint: 2, labels: [], created_at: '2024-01-11T16:00:00Z', updated_at: '2024-01-11T16:00:00Z'
-    },
-    {
-      id: 6, project: 1, key: 'PROJ-6', title: 'Agregar validación de formularios',
-      description: 'Implementar validación reactiva en todos los forms', category: 'Desarrollo',
-      summary: 'Form validation', suggested_solution: 'Angular Forms', status: this.mockStatuses[1],
-      priority: 'medium', type: 'task', reporter: { id: 1, username: 'juan.perez', email: 'juan.perez@empresa.com', first_name: 'Juan', last_name: 'Pérez' },
-      assigned_to: { id: 2, username: 'ana.lopez', email: 'ana.lopez@empresa.com', first_name: 'Ana', last_name: 'López' },
-      sprint: 2, labels: [], created_at: '2024-01-10T08:00:00Z', updated_at: '2024-01-10T08:00:00Z'
-    },
-    {
-      id: 7, project: 1, key: 'PROJ-7', title: 'Bug: Error 500 en API de usuarios',
-      description: 'El endpoint de usuarios devuelve 500', category: 'Bug',
-      summary: 'API 500', suggested_solution: 'Fix null pointer', status: this.mockStatuses[0],
-      priority: 'urgent', type: 'bug', reporter: { id: 4, username: 'maria.garcia', email: 'maria.garcia@empresa.com', first_name: 'María', last_name: 'García' },
-      labels: [], created_at: '2024-01-09T12:00:00Z', updated_at: '2024-01-09T12:00:00Z'
-    },
-    {
-      id: 8, project: 1, key: 'PROJ-8', title: 'Documentar API REST',
-      description: 'Crear documentación con Swagger', category: 'Documentación',
-      summary: 'API Docs', suggested_solution: 'Swagger', status: this.mockStatuses[2],
-      priority: 'low', type: 'task', reporter: { id: 5, username: 'luis.rodriguez', email: 'luis.rodriguez@empresa.com', first_name: 'Luis', last_name: 'Rodríguez' },
-      assigned_to: { id: 3, username: 'carlos.martinez', email: 'carlos.martinez@empresa.com', first_name: 'Carlos', last_name: 'Martínez' },
-      sprint: 2, labels: [], created_at: '2024-01-08T15:00:00Z', updated_at: '2024-01-08T15:00:00Z'
-    },
-    {
-      id: 9, project: 1, key: 'PROJ-9', title: 'Implementar notificaciones push',
-      description: 'Agregar soporte para notificaciones en tiempo real', category: 'Desarrollo',
-      summary: 'Push notifications', suggested_solution: 'Firebase', status: this.mockStatuses[0],
-      priority: 'medium', type: 'story', reporter: { id: 1, username: 'juan.perez', email: 'juan.perez@empresa.com', first_name: 'Juan', last_name: 'Pérez' },
-      labels: [], created_at: '2024-01-07T10:00:00Z', updated_at: '2024-01-07T10:00:00Z'
-    },
-    {
-      id: 10, project: 1, key: 'PROJ-10', title: 'Refactorizar código del componente proyectos',
-      description: 'Limpiar código y aplicar mejores prácticas', category: 'Refactoring',
-      summary: 'Refactor', suggested_solution: 'Clean code', status: this.mockStatuses[3],
-      priority: 'low', type: 'improvement', reporter: { id: 2, username: 'ana.lopez', email: 'ana.lopez@empresa.com', first_name: 'Ana', last_name: 'López' },
-      assigned_to: { id: 1, username: 'juan.perez', email: 'juan.perez@empresa.com', first_name: 'Juan', last_name: 'Pérez' },
-      sprint: 1, labels: [], created_at: '2024-01-06T09:00:00Z', updated_at: '2024-01-06T09:00:00Z'
-    }
-  ];
-
-  get filteredUsers(): UserResponse[] {
-    if (!this.memberSearch || this.memberSearch.length < 2 || this.selectedUserForAdd) return [];
-    const search = this.memberSearch.toLowerCase();
-    return this.mockUsers.filter(user =>
-      (user.email.toLowerCase().includes(search) || 
-       user.first_name.toLowerCase().includes(search) ||
-       user.last_name.toLowerCase().includes(search)) &&
-      !this.members.some(m => m.id === user.id)
-    );
-  }
+  
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -264,7 +164,7 @@ export class ProjectDetailComponent implements OnInit {
     }).subscribe({
       next: (data) => {
         this.project = data.project;
-        this.projectStatus = data.projectStatus || { id, tickets: 0, sprints: 0, statuses: [] };
+        this.projectStatus = data.projectStatus || { id, tickets_count: 0, sprints_count: 0, statuses: [] };
         this.recentActivity = data.recentActivity || [];
         this.isLoading = false;
         this.loadDueTickets(id);
@@ -273,72 +173,37 @@ export class ProjectDetailComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading project data:', err);
-        this.loadMockDataForDemo(id);
         this.isLoading = false;
       }
     });
   }
 
-  loadMockDataForDemo(id: number): void {
-    this.project = {
-      id: id,
-      name: 'Proyecto Demo',
-      description: 'Proyecto de demostración',
-      key: 'DEMO',
-      created_by: { id: 1, username: 'admin', email: 'admin@test.com', first_name: 'Admin', last_name: 'User' },
-      created_at: new Date().toISOString(),
-      members: [],
-      members_count: 0
-    };
-    this.projectStatus = { id, tickets_count: 10, sprints_count: 2, statuses: [] };
-    this.recentActivity = [];
-    this.loadDueTickets(id);
-    this.loadMembers(id);
-  }
-
   loadDueTickets(projectId: number): void {
     this.projectService.getDueTickets(projectId).subscribe({
       next: (data) => {
-        this.dueTickets = data && data.length > 0 ? data : this.getMockDueTickets();
+        this.dueTickets = data && data.length > 0 ? data : [];
       },
       error: (err) => {
         console.error('Error loading due tickets:', err);
-        this.dueTickets = this.getMockDueTickets();
+        this.dueTickets = [];
       }
     });
-  }
-
-  getMockDueTickets(): DueTickets[] {
-    return [
-      { key: 'DEMO-1', title: 'Implementar login con JWT', message: 'Vence hoy' },
-      { key: 'DEMO-2', title: 'Crear dashboard', message: 'Vence mañana' },
-      { key: 'DEMO-3', title: 'Configurar CI/CD', message: 'Vence en 3 días' }
-    ];
   }
 
   loadMembers(projectId: number): void {
     this.projectService.getMembers(projectId).subscribe({
       next: (data: ProjectMemberWithUser[]) => {
-        this.projectMembers = data && data.length > 0 ? data : this.getMockMembers();
+        this.projectMembers = data && data.length > 0 ? data : [];
         this.membersData = this.projectMembers;
         this.members = this.projectMembers.map(m => m.user);
       },
       error: (err) => {
         console.error('Error loading members:', err);
-        this.projectMembers = this.getMockMembers();
-        this.membersData = this.projectMembers;
-        this.members = this.projectMembers.map(m => m.user);
+        this.projectMembers = [];
+        this.membersData = [];
+        this.members = [];
       }
     });
-  }
-
-  getMockMembers(): ProjectMemberWithUser[] {
-    return [
-      { id: 1, role: 'admin' as const, user: { id: 1, username: 'juan.perez', email: 'juan.perez@empresa.com', first_name: 'Juan', last_name: 'Pérez' }, project: '1' },
-      { id: 2, role: 'developer' as const, user: { id: 2, username: 'ana.lopez', email: 'ana.lopez@empresa.com', first_name: 'Ana', last_name: 'López' }, project: '1' },
-      { id: 3, role: 'developer' as const, user: { id: 3, username: 'carlos.martinez', email: 'carlos.martinez@empresa.com', first_name: 'Carlos', last_name: 'Martínez' }, project: '1' },
-      { id: 4, role: 'qa' as const, user: { id: 4, username: 'maria.garcia', email: 'maria.garcia@empresa.com', first_name: 'María', last_name: 'García' }, project: '1' }
-    ];
   }
 
   getMemberColor(userId: number): string {
@@ -400,7 +265,6 @@ export class ProjectDetailComponent implements OnInit {
     this.isLoading = true;
     this.ticketService.getSprints(this.project.id).subscribe({
       next: (sprints) => {
-        console.log('Sprints loaded:', sprints);
         this.sprints = sprints || [];
         this.isLoading = false;
       },
@@ -537,8 +401,7 @@ export class ProjectDetailComponent implements OnInit {
           // 🔄 Recargar todo desde backend (estado real)
           this.loadTicketsAndStatuses();
           this.loadBacklogTickets();
-          console.log("Para el DROP: ", ticketId, this.project?.id);
-          // ✅ Feedback al usuario
+          // Feedback al usuario
           this.showToast(
             `Ticket movido al ${sprintName || 'backlog'} correctamente`,
             'success'
@@ -918,8 +781,6 @@ export class ProjectDetailComponent implements OnInit {
 
     const ticketId = Number(event.dataTransfer?.getData('ticketId'));
 
-    console.log('DROP:', ticketId, sprintId); // debug
-
     if (!ticketId) return;
 
     this.moveTicketToSprint(ticketId, sprintId);
@@ -929,8 +790,6 @@ export class ProjectDetailComponent implements OnInit {
     event.preventDefault();
 
     const ticketId = Number(event.dataTransfer?.getData('ticketId'));
-
-    console.log('DROP BACKLOG:', ticketId); // debug
 
     if (!ticketId) return;
 

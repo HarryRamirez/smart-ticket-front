@@ -45,8 +45,6 @@ export class ProjectService {
       if (params.paginate === false) httpParams = httpParams.set('paginate', 'false');
     }
 
-    console.log('Calling getProjects with URL:', `${this.apiUrl}/list/`, 'params:', httpParams.toString());
-    
     return this.http.get<PaginatedResponse<ProjectResponse>>(`${this.apiUrl}/list/`, { params: httpParams });
   }
 

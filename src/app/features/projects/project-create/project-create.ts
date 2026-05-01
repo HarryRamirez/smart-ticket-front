@@ -23,30 +23,11 @@ export class ProjectCreateComponent {
   });
 
   selectedMembers: UserResponse[] = [];
-  memberSearch = '';
   isLoading = false;
   errorMessage = '';
 
-  mockUsers: UserResponse[] = [
-    { id: 1, username: 'juan.perez', email: 'juan.perez@empresa.com', first_name: 'Juan', last_name: 'Pérez' },
-    { id: 2, username: 'ana.lopez', email: 'ana.lopez@empresa.com', first_name: 'Ana', last_name: 'López' },
-    { id: 3, username: 'carlos.martinez', email: 'carlos.martinez@empresa.com', first_name: 'Carlos', last_name: 'Martínez' },
-    { id: 4, username: 'maria.garcia', email: 'maria.garcia@empresa.com', first_name: 'María', last_name: 'García' },
-    { id: 5, username: 'admin', email: 'admin@smartticket.com', first_name: 'Admin', last_name: 'User' }
-  ];
-
-  get filteredUsers(): UserResponse[] {
-    if (!this.memberSearch || this.memberSearch.length < 2) return [];
-    const search = this.memberSearch.toLowerCase();
-    return this.mockUsers.filter(user =>
-      (user.email.toLowerCase().includes(search) || user.username.toLowerCase().includes(search)) &&
-      !this.selectedMembers.some(m => m.id === user.id)
-    );
-  }
-
   addMember(user: UserResponse) {
     this.selectedMembers = [...this.selectedMembers, user];
-    this.memberSearch = '';
   }
 
   removeMember(userId: number) {

@@ -31,8 +31,5 @@ export class NavbarComponent {
     this.authService.logout();
   }
 
-  toggleSidebar() {
-    // Implementación de toggle si es necesario, 
-    // usualmente vía un servicio de Layout
-  }
+  toggleSidebar() {}
 }

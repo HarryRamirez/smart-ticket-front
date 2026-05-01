@@ -30,7 +30,6 @@ export class DashboardComponent implements OnInit {
     urgent: 0,
     myTickets: 0,
     createdByMe: 0,
-    inReview: 0,
     unassigned: 0
   };
 

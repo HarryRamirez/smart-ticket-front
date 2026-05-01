@@ -25,15 +25,11 @@ export class ProjectsComponent implements OnInit {
     this.isLoading = true;
     this.projectService.getProjects().subscribe({
       next: (data) => {
-        console.log('Projects response:', data);
-        console.log('Projects results:', data.results);
         this.projects = data.results;
         this.isLoading = false;
       },
       error: (err) => {
         console.error('Error loading projects:', err);
-        console.error('Error status:', err.status);
-        console.error('Error message:', err.message);
         this.isLoading = false;
       }
     });
