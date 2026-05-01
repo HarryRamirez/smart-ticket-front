@@ -1474,22 +1474,22 @@
   border-radius: 3px;
   font-size: 10px;
   
-  &[data-type="bug"] {
+  &[data-type="bug"], &[data-type="Bug"] {
     background: var(--danger-bg);
     color: var(--danger);
   }
   
-  &[data-type="tarea"] {
+  &[data-type="tarea"], &[data-type="task"], &[data-type="Tarea"] {
     background: var(--primary-bg);
     color: var(--primary);
   }
   
-  &[data-type="historia"] {
+  &[data-type="historia"], &[data-type="story"], &[data-type="Historia"] {
     background: var(--success-bg);
     color: var(--success);
   }
   
-  &[data-type="épica"] {
+  &[data-type="épica"], &[data-type="epic"], &[data-type="Épica"] {
     background: var(--warning-bg);
     color: var(--warning);
   }
@@ -1497,6 +1497,11 @@
   &[data-type="subtask"] {
     background: var(--info-bg);
     color: var(--info);
+  }
+
+  &[data-type="improvement"], &[data-type="Mejora"] {
+    background: #f0fdf4;
+    color: #16a34a;
   }
   
   &[data-type=""] {
@@ -1510,6 +1515,23 @@
   font-weight: 600;
   color: var(--primary);
   flex: 1;
+}
+
+.category-badge-sm {
+  font-size: 9px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--surface-muted);
+  color: var(--ink-tertiary);
+  white-space: nowrap;
+}
+
+.board-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .priority-indicator {
@@ -1540,22 +1562,22 @@
   border-radius: 3px;
   text-transform: capitalize;
   
-  &[data-type="bug"] {
+  &[data-type="bug"], &[data-type="Bug"] {
     background: var(--danger-bg);
     color: var(--danger);
   }
   
-  &[data-type="tarea"] {
+  &[data-type="tarea"], &[data-type="task"], &[data-type="Tarea"] {
     background: var(--primary-bg);
     color: var(--primary);
   }
   
-  &[data-type="historia"] {
+  &[data-type="historia"], &[data-type="story"], &[data-type="Historia"] {
     background: var(--success-bg);
     color: var(--success);
   }
   
-  &[data-type="épica"] {
+  &[data-type="épica"], &[data-type="epic"], &[data-type="Épica"] {
     background: var(--warning-bg);
     color: var(--warning);
   }
@@ -1563,6 +1585,11 @@
   &[data-type="subtask"] {
     background: var(--info-bg);
     color: var(--info);
+  }
+
+  &[data-type="improvement"], &[data-type="Mejora"] {
+    background: #f0fdf4;
+    color: #16a34a;
   }
   
   &[data-type=""] {
