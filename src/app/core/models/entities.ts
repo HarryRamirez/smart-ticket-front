@@ -339,3 +339,10 @@ export interface StatusWithTicketsResponse {
   results: StatusWithTickets[];
 }
 
+export interface DashboardCards {
+  project_count: number;
+  my_tickets_count: number;
+  tickets_count: number;
+  unassigned_tickets_count: number;
+}
+

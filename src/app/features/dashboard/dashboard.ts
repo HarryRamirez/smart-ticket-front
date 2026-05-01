@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProjectService } from '../../core/services/project.service';
 import { TicketService } from '../../core/services/ticket.service';
-import { ProjectResponse, TicketResponse } from '../../core/models/entities';
+import { ProjectResponse, TicketResponse, DashboardCards } from '../../core/models/entities';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -24,13 +24,10 @@ export class DashboardComponent implements OnInit {
   isLoading = true;
   
   stats = {
-    total: 0,
-    pending: 0,
-    resolved: 0,
-    urgent: 0,
-    myTickets: 0,
-    createdByMe: 0,
-    unassigned: 0
+    project_count: 0,
+    my_tickets_count: 0,
+    tickets_count: 0,
+    unassigned_tickets_count: 0
   };
 
   currentUserId: number | null = null;
@@ -50,39 +47,19 @@ export class DashboardComponent implements OnInit {
 
   loadDashboardData() {
     this.isLoading = true;
-    forkJoin({
-      projects: this.projectService.getProjects({ paginate: false }),
-      tickets: this.ticketService.getTickets()
-    }).subscribe({
-      next: (data) => {
-        this.projects = data.projects.results;
-        this.allTickets = data.tickets;
-        this.recentTickets = data.tickets.slice(0, 5);
-        this.calculateStats(data.tickets, this.projects);
+    this.projectService.getDashboardCards().subscribe({
+      next: (cards) => {
+        this.stats.project_count = cards.project_count;
+        this.stats.my_tickets_count = cards.my_tickets_count;
+        this.stats.tickets_count = cards.tickets_count;
+        this.stats.unassigned_tickets_count = cards.unassigned_tickets_count;
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error loading dashboard data', err);
+        console.error('Error loading dashboard cards', err);
         this.isLoading = false;
       }
     });
-  }
-
-  calculateStats(tickets: TicketResponse[], projects: ProjectResponse[]) {
-    this.stats.total = tickets.length;
-    this.stats.pending = tickets.filter(t => t.status.name !== 'Done' && t.status.name !== 'Closed' && t.status.name !== 'Completado').length;
-    this.stats.resolved = tickets.filter(t => t.status.name === 'Done' || t.status.name === 'Closed' || t.status.name === 'Completado').length;
-    this.stats.urgent = tickets.filter(t => {
-      const p = t.priority?.toLowerCase();
-      return p === 'crítica' || p === 'urgent' || p === 'alta' || p === 'high';
-    }).length;
-    
-    if (this.currentUserId) {
-      this.stats.myTickets = tickets.filter(t => t.assigned_to?.id === this.currentUserId).length;
-      this.stats.createdByMe = tickets.filter(t => t.reporter?.id === this.currentUserId).length;
-    }
-    
-    this.stats.unassigned = tickets.filter(t => !t.assigned_to).length;
   }
 
   getPriorityClass(priority: string): string {
