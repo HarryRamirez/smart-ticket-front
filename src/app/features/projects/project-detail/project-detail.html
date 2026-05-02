@@ -516,10 +516,16 @@
           </h4>
           <p class="board-subtitle">Visualiza el progreso de tus tickets por estado</p>
         </div>
-        <button class="btn-create-ticket" (click)="openCreateTicketForStatus(0)">
-          <i class="bi bi-plus-lg"></i>
-          Nuevo Ticket
-        </button>
+        <div class="d-flex gap-2">
+          <button class="btn-create-ticket" (click)="toggleStatusModal()">
+            <i class="bi bi-plus-lg"></i>
+            Nuevo Estado
+          </button>
+          <button class="btn-create-ticket" (click)="openCreateTicketForStatus(0)">
+            <i class="bi bi-plus-lg"></i>
+            Nuevo Ticket
+          </button>
+        </div>
       </div>
 
       @if (isLoading) {
@@ -527,6 +533,17 @@
           <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
+        </div>
+      } @else if (statuses.length === 0 && !isLoading) {
+        <div class="text-center py-5">
+          <div class="empty-state mb-4">
+            <i class="bi bi-kanban" style="font-size: 3rem; color: #cbd5e1;"></i>
+          </div>
+          <h5 class="text-secondary mb-2">No hay estados disponibles</h5>
+          <p class="text-muted mb-3">Crea estados para organizar los tickets del proyecto</p>
+          <button class="btn btn-primary" (click)="toggleStatusModal()">
+            <i class="bi bi-plus-lg me-2"></i>Crear Estado
+          </button>
         </div>
       } @else {
         <div class="board-container">
