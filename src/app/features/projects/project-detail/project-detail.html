@@ -770,6 +770,37 @@
     </div>
   }
 
+  <!-- Status Create Modal -->
+  @if (showStatusModal) {
+    <div class="sprint-modal-backdrop" (click)="toggleStatusModal()"></div>
+    <div class="sprint-modal-container">
+      <div class="sprint-modal-content" (click)="$event.stopPropagation()">
+        <div class="sprint-modal-header">
+          <h5 class="sprint-modal-title">Crear Estado</h5>
+          <button type="button" class="sprint-modal-close" (click)="toggleStatusModal()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="sprint-modal-body">
+          <div class="form-group">
+            <label class="form-label">Nombre del Estado</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              [(ngModel)]="newStatus.name" 
+              placeholder="Ej: En Progreso">
+          </div>
+        </div>
+        <div class="sprint-modal-footer">
+          <button type="button" class="btn-cancel" (click)="toggleStatusModal()">Cancelar</button>
+          <button type="button" class="btn-save" (click)="createStatus()">
+            Crear Estado
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
   <!-- Toast Notification -->
   @if (toastMessage) {
     <div class="toast-notification" [class.toast-success]="toastType === 'success'" [class.toast-error]="toastType === 'error'">
