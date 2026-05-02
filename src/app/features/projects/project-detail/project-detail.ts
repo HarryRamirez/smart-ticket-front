@@ -349,18 +349,17 @@ export class ProjectDetailComponent implements OnInit {
 
   createStatus(): void {
     if (!this.project || !this.newStatus.name) return;
-    const statusData: CreateStatus = {
-      name: this.newStatus.name,
-      order: this.statuses.length + 1,
-      project: this.project.id
-    };
-    this.ticketService.createStatus(statusData).subscribe({
+    this.projectService.createStatusByProject(this.project.id, this.newStatus.name).subscribe({
       next: (status) => {
         this.statuses = [...this.statuses, status];
         this.showStatusModal = false;
         this.newStatus = { name: '', order: 0 };
+        this.showToast('Estado creado correctamente', 'success');
       },
-      error: (err) => console.error('Error creating status:', err)
+      error: (err) => {
+        console.error('Error creating status:', err);
+        this.showToast('Error al crear el estado', 'error');
+      }
     });
   }
 

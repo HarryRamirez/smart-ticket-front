@@ -11,7 +11,8 @@ import {
   ActivityProject,
   DueTickets,
   ProjectMemberWithUser,
-  DashboardCards
+  DashboardCards,
+  StatusResponse
 } from '../models/entities';
 import { environment } from '../../../environments/environment';
 import { Observable, of } from 'rxjs';
@@ -100,4 +101,10 @@ export class ProjectService {
   getDashboardCards(): Observable<DashboardCards> {
     return this.http.get<DashboardCards>(`${this.apiUrl}/dashboard/cards`);
   }
+
+
+  createStatusByProject(projectId: number, name: string): Observable<StatusResponse> {
+    return this.http.post<StatusResponse>(`${this.apiUrl}/${projectId}/status/`, { name });
+  }
+  
 }
