@@ -219,6 +219,7 @@ export interface CreateTicket {
   summary: string;
   suggested_solution: string;
   due_date?: string;
+  status?: number;
 }
 
 export interface UpdateTicket {

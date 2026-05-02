@@ -33,6 +33,7 @@ export class TicketCreateComponent implements OnChanges {
     category: ['', [Validators.required]],
     priority: ['', [Validators.required]],
     type: ['', [Validators.required]],
+    status: ['', [Validators.required]],
     summary: [''],
     suggested_solution: [''],
     due_date: ['', [Validators.required]]
@@ -51,6 +52,7 @@ export class TicketCreateComponent implements OnChanges {
         category: this.editingTicket.category,
         priority: this.editingTicket.priority,
         type: this.editingTicket.type,
+        status: this.editingTicket.status,
         summary: this.editingTicket.summary || '',
         suggested_solution: this.editingTicket.suggested_solution || '',
         due_date: this.editingTicket.due_date ? this.editingTicket.due_date.split('T')[0] : ''
@@ -63,6 +65,7 @@ export class TicketCreateComponent implements OnChanges {
         category: '',
         priority: '',
         type: '',
+        status: '',
         summary: '',
         suggested_solution: '',
         due_date: ''
@@ -75,7 +78,7 @@ export class TicketCreateComponent implements OnChanges {
       this.isLoading = true;
       this.errorMessage = '';
       
-      const statusId = this.initialStatusId || this.statuses[0]?.id || 1;
+      const statusId = this.ticketForm.get('status')?.value || this.initialStatusId || this.statuses[0]?.id || 1;
       const formValue = this.ticketForm.value;
       
       if (this.editingTicket) {
@@ -101,7 +104,8 @@ export class TicketCreateComponent implements OnChanges {
           type: formValue.type,
           summary: formValue.summary || '',
           suggested_solution: formValue.suggested_solution || '',
-          due_date: formValue.due_date || ''
+          due_date: formValue.due_date || '',
+          status: typeof statusId === 'number' ? statusId : Number(statusId)
         };
 
         this.ticketService.createTicket(this.projectId, ticketData).subscribe({
