@@ -157,4 +157,8 @@ export class TicketService {
     }
     return this.http.get<StatusWithTicketsResponse>(`${this.apiUrl}/project/${projectId}/tickets_by_status/`, { params: httpParams });
   }
+
+  assignUserToTicket(ticketId: number, projectId: number, assignedTo: number | null): Observable<TicketResponse> {
+    return this.http.patch<TicketResponse>(`${this.apiUrl}/${ticketId}/project/${projectId}/assign-update/`, { assigned_to: assignedTo });
+  }
 }

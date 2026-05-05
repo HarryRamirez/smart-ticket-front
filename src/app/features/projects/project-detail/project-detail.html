@@ -371,18 +371,19 @@
                           </div>
                         </div>
                         <div class="sprint-ticket-right">
-                          @if (ticket.assigned_to) {
                             <div 
-                              class="assignee-avatar-sm"
-                              [style.background-color]="getMemberColor(ticket.assigned_to.id)"
-                              [title]="ticket.assigned_to.email || ticket.assigned_to.first_name + ' ' + ticket.assigned_to.last_name">
-                              {{ ticket.assigned_to.avatar }}
+                              class="assignee-avatar-sm" 
+                              [class.unassigned]="!ticket.assigned_to"
+                              [style.background-color]="ticket.assigned_to ? getMemberColor(ticket.assigned_to.id) : ''"
+                              [title]="ticket.assigned_to ? (ticket.assigned_to.email || ticket.assigned_to.first_name + ' ' + ticket.assigned_to.last_name) : 'Sin asignar'"
+                              (click)="openAssignUserModal(ticket)"
+                              style="cursor: pointer;">
+                              @if (ticket.assigned_to) {
+                                {{ ticket.assigned_to.avatar }}
+                              } @else {
+                                <i class="bi bi-person"></i>
+                              }
                             </div>
-                          } @else {
-                            <div class="assignee-avatar-sm unassigned">
-                              <i class="bi bi-person"></i>
-                            </div>
-                          }
                         </div>
                       </div>
                     }
@@ -459,18 +460,19 @@
                   </div>
                 </div>
                 <div class="ticket-right">
-                  @if (ticket.assigned_to) {
                     <div 
-                      class="assignee-avatar"
-                      [style.background-color]="getMemberColor(ticket.assigned_to.id)"
-                      [title]="ticket.assigned_to.email">
-                      {{ ticket.assigned_to.avatar }}
+                      class="assignee-avatar" 
+                      [class.unassigned]="!ticket.assigned_to"
+                      [style.background-color]="ticket.assigned_to ? getMemberColor(ticket.assigned_to.id) : ''"
+                      [title]="ticket.assigned_to ? ticket.assigned_to.email : 'Sin asignar'"
+                      (click)="openAssignUserModal(ticket)"
+                      style="cursor: pointer;">
+                      @if (ticket.assigned_to) {
+                        {{ ticket.assigned_to.avatar }}
+                      } @else {
+                        <i class="bi bi-person"></i>
+                      }
                     </div>
-                  } @else {
-                    <div class="assignee-avatar unassigned">
-                      <i class="bi bi-person"></i>
-                    </div>
-                  }
                 </div>
               </div>
             }
@@ -583,15 +585,19 @@
                           {{ ticket.priority }}
                         </span>
                         <span class="ticket-type-sm" [attr.data-type]="ticket.type">{{ ticket.type }}</span>
-                        @if (ticket.assigned_to) {
-                          <div class="assignee-sm" [style.background]="getMemberColor(ticket.assigned_to.id)" [title]="ticket.assigned_to.email">
+                        <div 
+                          class="assignee-sm" 
+                          [class.unassigned]="!ticket.assigned_to"
+                          [style.background]="ticket.assigned_to ? getMemberColor(ticket.assigned_to.id) : ''"
+                          [title]="ticket.assigned_to ? ticket.assigned_to.email : 'Sin asignar'"
+                          (click)="openAssignUserModal(ticket)"
+                          style="cursor: pointer;">
+                          @if (ticket.assigned_to) {
                             {{ ticket.assigned_to.avatar }}
-                          </div>
-                        } @else {
-                          <div class="assignee-sm unassigned">
+                          } @else {
                             <i class="bi bi-person"></i>
-                          </div>
-                        }
+                          }
+                        </div>
                       </div>
                     </div>
                   }
@@ -763,6 +769,68 @@
                   <span class="activity-time">{{ formatTimeAgo(activity.time_ago) }}</span>
                 </div>
               </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Assign User Modal -->
+  @if (showAssignUserModal && ticketToAssign) {
+    <div class="members-modal-backdrop" (click)="closeAssignUserModal()"></div>
+    <div class="members-modal-container">
+      <div class="members-modal-content" (click)="$event.stopPropagation()">
+        <div class="members-modal-header">
+          <h5 class="members-modal-title">Asignar Usuario</h5>
+          <button type="button" class="members-modal-close" (click)="closeAssignUserModal()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="members-modal-body">
+          <p class="mb-3 text-muted small">
+            Ticket: <strong>{{ ticketToAssign.key }}</strong> - {{ ticketToAssign.title }}
+          </p>
+          @if (ticketToAssign.assigned_to) {
+            <div class="current-assignee mb-3 p-2 rounded" style="background: #f8f9fa;">
+              <span class="text-muted small">Asignado actualmente:</span>
+              <div class="d-flex align-items-center mt-1">
+                <div class="member-avatar-lg me-2" [style.background-color]="getMemberColor(ticketToAssign.assigned_to.id)">
+                  {{ getInitials(ticketToAssign.assigned_to) }}
+                </div>
+                <span>{{ getAssignedUserName() }}</span>
+              </div>
+            </div>
+          }
+          <label class="form-label fw-semibold">Seleccionar miembro del proyecto</label>
+          <div class="assign-user-list">
+            @for (member of projectMembers; track member.id) {
+              <div 
+                class="assign-user-item" 
+                [class.selected]="ticketToAssign.assigned_to?.id === member.user.id"
+                (click)="assignUser(member.user.id)">
+                <div class="member-avatar" [style.background-color]="getMemberColor(member.user.id)">
+                  {{ getInitials(member.user) }}
+                </div>
+                <div class="flex-grow-1">
+                  <div class="member-name">{{ member.user.first_name }} {{ member.user.last_name }}</div>
+                  <div class="member-email">{{ member.user.email }}</div>
+                </div>
+                @if (ticketToAssign.assigned_to?.id === member.user.id) {
+                  <i class="bi bi-check-circle-fill text-primary"></i>
+                }
+              </div>
+            }
+            @if (ticketToAssign.assigned_to) {
+              <button class="btn btn-outline-danger w-100 mt-3" (click)="assignUser(null)">
+                <i class="bi bi-person-dash me-2"></i>Desasignar usuario
+              </button>
+            }
+          </div>
+          @if (projectMembers.length === 0) {
+            <div class="text-center text-muted py-3">
+              <i class="bi bi-people d-block mb-2" style="font-size: 2rem;"></i>
+              No hay miembros en el proyecto
             </div>
           }
         </div>

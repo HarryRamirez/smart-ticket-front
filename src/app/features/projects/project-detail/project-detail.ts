@@ -58,6 +58,9 @@ export class ProjectDetailComponent implements OnInit {
   showActivityModal = false;
   showDeleteMemberModal = false;
   memberToDelete: number | null = null;
+
+  showAssignUserModal = false;
+  ticketToAssign: backlogTicketsResponse | TicketResponse | null = null;
   allActivity: ActivityProject[] = [];
   editingSprint: SprintResponse | null = null;
   editingStatus: StatusResponse | null = null;
@@ -892,5 +895,43 @@ export class ProjectDetailComponent implements OnInit {
   closeActivityModal(): void {
     this.showActivityModal = false;
     document.body.style.overflow = '';
+  }
+
+  openAssignUserModal(ticket: backlogTicketsResponse | TicketResponse): void {
+    this.ticketToAssign = ticket;
+    this.showAssignUserModal = true;
+  }
+
+  closeAssignUserModal(): void {
+    this.showAssignUserModal = false;
+    this.ticketToAssign = null;
+  }
+
+  assignUser(userId: number | null): void {
+    if (!this.project || !this.ticketToAssign) return;
+
+    this.ticketService.assignUserToTicket(this.ticketToAssign.id, this.project.id, userId).subscribe({
+      next: () => {
+        this.showToast(userId ? 'Usuario asignado correctamente' : 'Usuario desasignado correctamente', 'success');
+        this.closeAssignUserModal();
+        if (this.activeTab === 'backlog') {
+          this.loadBacklogTickets();
+        } else if (this.activeTab === 'board') {
+          this.loadTicketsByStatus(true, this.boardSearchTerm);
+        }
+      },
+      error: (err) => {
+        console.error('Error assigning user:', err);
+        this.showToast('Error al asignar usuario', 'error');
+      }
+    });
+  }
+
+  getAssignedUserName(): string {
+    if (!this.ticketToAssign?.assigned_to) return '';
+    const user = this.ticketToAssign.assigned_to as any;
+    return (user.first_name && user.last_name) 
+      ? `${user.first_name} ${user.last_name}` 
+      : user.email || '';
   }
 }
