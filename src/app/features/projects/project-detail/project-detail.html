@@ -562,9 +562,9 @@
                     <i class="bi bi-plus"></i>
                   </button>
                 </div>
-                <div class="column-content" 
-                     (dragover)="$event.preventDefault()" 
-                     (drop)="onDropToSprint($event, status.id)">
+<div class="column-content" 
+                      (dragover)="$event.preventDefault()" 
+                      (drop)="onDropToStatus($event, status.id)">
                   @for (ticket of getTicketsByStatus(status.id); track ticket.id) {
                     <div class="board-card" 
                          draggable="true" 

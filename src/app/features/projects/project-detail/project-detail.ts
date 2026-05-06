@@ -421,15 +421,18 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   moveTicketToStatus(ticketId: number, statusId: number): void {
-    const ticket = this.tickets.find(t => t.id === ticketId);
-    if (!ticket) return;
+    if (!this.project) return;
     const status = this.statuses.find(s => s.id === statusId);
     if (!status) return;
-    this.ticketService.moveTicketToStatus(ticketId, statusId).subscribe({
+    this.ticketService.updateTicketStatus(ticketId, this.project.id, statusId).subscribe({
       next: () => {
-        this.tickets = this.tickets.map(t => t.id === ticketId ? { ...t, status } : t);
+        this.loadTicketsByStatus(true, this.boardSearchTerm);
+        this.showToast(`Ticket movido a "${status.name}" correctamente`, 'success');
       },
-      error: (err) => console.error('Error moving ticket:', err)
+      error: (err) => {
+        console.error('Error moving ticket:', err);
+        this.showToast('Error al mover el ticket', 'error');
+      }
     });
   }
 
@@ -787,6 +790,16 @@ export class ProjectDetailComponent implements OnInit {
     if (!ticketId) return;
 
     this.moveTicketToSprint(ticketId, sprintId);
+  }
+
+  onDropToStatus(event: DragEvent, statusId: number): void {
+    event.preventDefault();
+
+    const ticketId = Number(event.dataTransfer?.getData('ticketId'));
+
+    if (!ticketId) return;
+
+    this.moveTicketToStatus(ticketId, statusId);
   }
 
   onDropToBacklog(event: DragEvent): void {
