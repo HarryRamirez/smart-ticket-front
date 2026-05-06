@@ -336,6 +336,30 @@
                         <i class="bi bi-play-fill"></i>
                       </button>
                     }
+                    <div class="dropdown-container">
+                      <button class="btn-more-options" (click)="toggleDropdown($event, 'sprint-' + sprint.id)">
+                        <i class="bi bi-three-dots-vertical"></i>
+                      </button>
+                      @if (openDropdownId === 'sprint-' + sprint.id) {
+                        <div class="dropdown-menu-action">
+                          <button class="dropdown-item-action" (click)="toggleSprintModal(sprint); closeDropdowns()">
+                            <i class="bi bi-pencil"></i>
+                            Actualizar
+                          </button>
+                          @if (getCanDeleteSprint(sprint)) {
+                            <button class="dropdown-item-action delete" (click)="confirmDelete('sprint', sprint.id); closeDropdowns()">
+                              <i class="bi bi-trash"></i>
+                              Eliminar
+                            </button>
+                          } @else {
+                            <button class="dropdown-item-action disabled" [disabled]="true">
+                              <i class="bi bi-trash"></i>
+                              Eliminar
+                            </button>
+                          }
+                        </div>
+                      }
+                    </div>
                   </div>
                 </div>
                 
@@ -460,19 +484,36 @@
                   </div>
                 </div>
                 <div class="ticket-right">
-                    <div 
-                      class="assignee-avatar" 
-                      [class.unassigned]="!ticket.assigned_to"
-                      [style.background-color]="ticket.assigned_to ? getMemberColor(ticket.assigned_to.id) : ''"
-                      [title]="ticket.assigned_to ? ticket.assigned_to.email : 'Sin asignar'"
-                      (click)="openAssignUserModal(ticket)"
-                      style="cursor: pointer;">
-                      @if (ticket.assigned_to) {
-                        {{ ticket.assigned_to.avatar }}
-                      } @else {
-                        <i class="bi bi-person"></i>
-                      }
-                    </div>
+                  <div class="dropdown-container">
+                    <button class="btn-more-options" (click)="toggleDropdown($event, 'ticket-backlog-' + ticket.id)">
+                      <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    @if (openDropdownId === 'ticket-backlog-' + ticket.id) {
+                      <div class="dropdown-menu-action">
+                        <button class="dropdown-item-action" (click)="editTicket(ticket); closeDropdowns()">
+                          <i class="bi bi-pencil"></i>
+                          Actualizar
+                        </button>
+                        <button class="dropdown-item-action delete" (click)="confirmDelete('ticket', ticket.id); closeDropdowns()">
+                          <i class="bi bi-trash"></i>
+                          Eliminar
+                        </button>
+                      </div>
+                    }
+                  </div>
+                  <div 
+                    class="assignee-avatar" 
+                    [class.unassigned]="!ticket.assigned_to"
+                    [style.background-color]="ticket.assigned_to ? getMemberColor(ticket.assigned_to.id) : ''"
+                    [title]="ticket.assigned_to ? ticket.assigned_to.email : 'Sin asignar'"
+                    (click)="openAssignUserModal(ticket)"
+                    style="cursor: pointer;">
+                    @if (ticket.assigned_to) {
+                      {{ ticket.assigned_to.avatar }}
+                    } @else {
+                      <i class="bi bi-person"></i>
+                    }
+                  </div>
                 </div>
               </div>
             }
@@ -558,9 +599,35 @@
                     <h6 class="column-title">{{ status.name }}</h6>
                     <span class="column-count">{{ getTicketsByStatus(status.id).length }}</span>
                   </div>
-                  <button class="column-add-btn" (click)="openCreateTicketForStatus(status.id)" title="Agregar ticket">
-                    <i class="bi bi-plus"></i>
-                  </button>
+                  <div class="d-flex align-items-center gap-1">
+                    <div class="dropdown-container">
+                      <button class="btn-more-options" (click)="toggleDropdown($event, 'status-' + status.id)">
+                        <i class="bi bi-three-dots-vertical"></i>
+                      </button>
+                      @if (openDropdownId === 'status-' + status.id) {
+                        <div class="dropdown-menu-action">
+                          <button class="dropdown-item-action" (click)="toggleStatusModal(status); closeDropdowns()">
+                            <i class="bi bi-pencil"></i>
+                            Actualizar
+                          </button>
+                          @if (getCanDeleteStatus(status.id)) {
+                            <button class="dropdown-item-action delete" (click)="confirmDelete('status', status.id); closeDropdowns()">
+                              <i class="bi bi-trash"></i>
+                              Eliminar
+                            </button>
+                          } @else {
+                            <button class="dropdown-item-action disabled" [disabled]="true">
+                              <i class="bi bi-trash"></i>
+                              Eliminar
+                            </button>
+                          }
+                        </div>
+                      }
+                    </div>
+                    <button class="column-add-btn" (click)="openCreateTicketForStatus(status.id)" title="Agregar ticket">
+                      <i class="bi bi-plus"></i>
+                    </button>
+                  </div>
                 </div>
 <div class="column-content" 
                       (dragover)="$event.preventDefault()" 
@@ -596,6 +663,23 @@
                             {{ ticket.assigned_to.avatar }}
                           } @else {
                             <i class="bi bi-person"></i>
+                          }
+                        </div>
+                        <div class="dropdown-container">
+                          <button class="btn-more-options" (click)="toggleDropdown($event, 'ticket-board-' + ticket.id)">
+                            <i class="bi bi-three-dots-vertical"></i>
+                          </button>
+                          @if (openDropdownId === 'ticket-board-' + ticket.id) {
+                            <div class="dropdown-menu-action">
+                              <button class="dropdown-item-action" (click)="editTicket(ticket); closeDropdowns()">
+                                <i class="bi bi-pencil"></i>
+                                Actualizar
+                              </button>
+                              <button class="dropdown-item-action delete" (click)="confirmDelete('ticket', ticket.id); closeDropdowns()">
+                                <i class="bi bi-trash"></i>
+                                Eliminar
+                              </button>
+                            </div>
                           }
                         </div>
                       </div>
@@ -864,6 +948,30 @@
           <button type="button" class="btn-save" (click)="createStatus()">
             Crear Estado
           </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Delete Confirmation Modal -->
+  @if (showDeleteConfirm) {
+    <div class="sprint-modal-backdrop" (click)="cancelDelete()"></div>
+    <div class="sprint-modal-container">
+      <div class="sprint-modal-content" style="max-width: 400px;" (click)="$event.stopPropagation()">
+        <div class="sprint-modal-header">
+          <h5 class="sprint-modal-title">Confirmar Eliminación</h5>
+          <button type="button" class="sprint-modal-close" (click)="cancelDelete()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="sprint-modal-body">
+          <p *ngIf="showDeleteConfirm.type === 'ticket'">¿Estás seguro de que deseas eliminar este ticket? Esta acción no se puede deshacer.</p>
+          <p *ngIf="showDeleteConfirm.type === 'sprint'">¿Estás seguro de que deseas eliminar este sprint? Los tickets asociados volveran al backlog.</p>
+          <p *ngIf="showDeleteConfirm.type === 'status'">¿Estás seguro de que deseas eliminar este estado?</p>
+        </div>
+        <div class="sprint-modal-footer">
+          <button type="button" class="btn-cancel" (click)="cancelDelete()">Cancelar</button>
+          <button type="button" class="btn-save" style="background: #de350b;" (click)="executeDelete()">Eliminar</button>
         </div>
       </div>
     </div>

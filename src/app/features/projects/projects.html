@@ -45,6 +45,23 @@
                   {{ project.key }}
                 </span>
                 <h5 class="card-title fw-bold mb-0 text-truncate" style="color: var(--ink-primary);">{{ project.name }}</h5>
+                <div class="dropdown-container ms-auto">
+                  <button class="btn-more-options" (click)="toggleDropdown($event, project.id)">
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+                  @if (openDropdownId === 'project-' + project.id) {
+                    <div class="dropdown-menu-action">
+                      <button class="dropdown-item-action" [routerLink]="['/projects', project.id]" (click)="closeDropdowns()">
+                        <i class="bi bi-pencil"></i>
+                        Actualizar
+                      </button>
+                      <button class="dropdown-item-action delete" (click)="confirmDelete(project.id)">
+                        <i class="bi bi-trash"></i>
+                        Eliminar
+                      </button>
+                    </div>
+                  }
+                </div>
               </div>
               <p class="small mb-4 text-truncate-2" style="color: var(--ink-tertiary);">{{ project.description }}</p>
                
@@ -60,6 +77,35 @@
           </div>
         </div>
       }
+    </div>
+  }
+
+  <!-- Delete Confirmation Modal -->
+  @if (showDeleteConfirm) {
+    <div class="modal-backdrop" (click)="cancelDelete()"></div>
+    <div class="modal-dialog-custom">
+      <div class="modal-content-custom" style="max-width: 400px;" (click)="$event.stopPropagation()">
+        <div class="modal-header-custom">
+          <h5 class="modal-title">Confirmar Eliminación</h5>
+          <button type="button" class="btn-close" (click)="cancelDelete()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body p-4">
+          <p>¿Estás seguro de que deseas eliminar este proyecto? Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="p-4 d-flex gap-3 justify-content-end" style="border-top: 1px solid #dee2e6;">
+          <button class="btn btn-secondary" (click)="cancelDelete()">Cancelar</button>
+          <button class="btn btn-danger" (click)="executeDelete()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Toast Notification -->
+  @if (toastMessage) {
+    <div class="toast-notification" [class.toast-success]="toastType === 'success'" [class.toast-error]="toastType === 'error'">
+      {{ toastMessage }}
     </div>
   }
 </div>

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -117,6 +117,9 @@ export class ProjectDetailComponent implements OnInit {
   currentUserId: number | null = null;
   currentUserRole: 'admin' | 'developer' | 'qa' | 'viewer' | null = null;
 
+  openDropdownId: string | null = null;
+  showDeleteConfirm: { type: 'ticket' | 'sprint' | 'status', id: number } | null = null;
+
   
 
   
@@ -138,6 +141,14 @@ export class ProjectDetailComponent implements OnInit {
       const user = JSON.parse(userStr);
       this.currentUserEmail = user.email;
       this.currentUserId = user.id;
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.dropdown-container')) {
+      this.openDropdownId = null;
     }
   }
 
@@ -757,8 +768,28 @@ export class ProjectDetailComponent implements OnInit {
     this.loadTicketsByStatus(true, this.boardSearchTerm);
   }
 
-  editTicket(ticket: TicketResponse): void {
-    this.editingTicket = ticket;
+  editTicket(ticket: any): void {
+    const ticketData: TicketResponse = {
+      id: ticket.id,
+      key: ticket.key,
+      title: ticket.title,
+      description: ticket.description || '',
+      category: ticket.category || '',
+      summary: ticket.summary || '',
+      suggested_solution: ticket.suggested_solution || '',
+      status: ticket.status || { id: 0, name: '', created_by: {} as any, order: 0, is_active: true, project: 0 },
+      priority: ticket.priority || 'media',
+      type: ticket.type || 'task',
+      reporter: ticket.reporter || { id: 0, username: '', email: '', first_name: '', last_name: '' },
+      assigned_to: ticket.assigned_to,
+      sprint: ticket.sprint || undefined,
+      labels: ticket.labels || [],
+      project: ticket.project || 0,
+      due_date: ticket.due_date,
+      created_at: ticket.created_at || new Date().toISOString(),
+      updated_at: ticket.updated_at || new Date().toISOString()
+    };
+    this.editingTicket = ticketData;
     this.showTicketModal = true;
   }
 
@@ -810,17 +841,6 @@ export class ProjectDetailComponent implements OnInit {
     if (!ticketId) return;
 
     this.moveTicketToSprint(ticketId, null);
-  }
-
-  deleteTicket(ticketId: number): void {
-    if (confirm('¿Estás seguro de que deseas eliminar este ticket?')) {
-      this.ticketService.deleteTicket(ticketId).subscribe({
-        next: () => {
-          this.tickets = this.tickets.filter(t => t.id !== ticketId);
-        },
-        error: (err) => console.error('Error deleting ticket:', err)
-      });
-    }
   }
 
   onTicketUpdated(updatedTicket: TicketResponse): void {
@@ -946,5 +966,94 @@ export class ProjectDetailComponent implements OnInit {
     return (user.first_name && user.last_name) 
       ? `${user.first_name} ${user.last_name}` 
       : user.email || '';
+  }
+
+  toggleDropdown(event: Event, dropdownId: string): void {
+    event.stopPropagation();
+    this.openDropdownId = this.openDropdownId === dropdownId ? null : dropdownId;
+  }
+
+  closeDropdowns(): void {
+    this.openDropdownId = null;
+  }
+
+  confirmDelete(type: 'ticket' | 'sprint' | 'status', id: number): void {
+    this.showDeleteConfirm = { type, id };
+  }
+
+  cancelDelete(): void {
+    this.showDeleteConfirm = null;
+  }
+
+  executeDelete(): void {
+    if (!this.showDeleteConfirm) return;
+    
+    const { type, id } = this.showDeleteConfirm;
+    
+    if (type === 'ticket') {
+      this.executeDeleteTicket(id);
+    } else if (type === 'sprint') {
+      this.executeDeleteSprint(id);
+    } else if (type === 'status') {
+      this.executeDeleteStatus(id);
+    }
+    
+    this.showDeleteConfirm = null;
+    this.closeDropdowns();
+  }
+
+  executeDeleteTicket(ticketId: number): void {
+    this.ticketService.deleteTicket(ticketId).subscribe({
+      next: () => {
+        this.tickets = this.tickets.filter(t => t.id !== ticketId);
+        this.backlogTickets = this.backlogTickets.filter(t => t.id !== ticketId);
+        this.statusesWithTickets = this.statusesWithTickets.map(s => ({
+          ...s,
+          tickets: s.tickets.filter(t => t.id !== ticketId)
+        }));
+        this.showToast('Ticket eliminado correctamente', 'success');
+      },
+      error: (err) => {
+        console.error('Error deleting ticket:', err);
+        this.showToast('Error al eliminar el ticket', 'error');
+      }
+    });
+  }
+
+  executeDeleteSprint(sprintId: number): void {
+    this.ticketService.deleteSprint(sprintId).subscribe({
+      next: () => {
+        this.sprints = this.sprints.filter(s => s.id !== sprintId);
+        this.tickets = this.tickets.map(t => t.sprint === sprintId ? { ...t, sprint: undefined } : t);
+        this.loadTicketsAndStatuses();
+        this.showToast('Sprint eliminado correctamente', 'success');
+      },
+      error: (err) => {
+        console.error('Error deleting sprint:', err);
+        this.showToast('Error al eliminar el sprint', 'error');
+      }
+    });
+  }
+
+  executeDeleteStatus(statusId: number): void {
+    this.ticketService.deleteStatus(statusId).subscribe({
+      next: () => {
+        this.statuses = this.statuses.filter(s => s.id !== statusId);
+        this.statusesWithTickets = this.statusesWithTickets.filter(s => s.id !== statusId);
+        this.showToast('Estado eliminado correctamente', 'success');
+      },
+      error: (err) => {
+        console.error('Error deleting status:', err);
+        this.showToast('Error al eliminar el estado', 'error');
+      }
+    });
+  }
+
+  getCanDeleteSprint(sprint: SprintResponse): boolean {
+    return sprint.ticket_count === 0;
+  }
+
+  getCanDeleteStatus(statusId: number): boolean {
+    return this.getTicketsByStatus(statusId).length === 0;
   }
 }
