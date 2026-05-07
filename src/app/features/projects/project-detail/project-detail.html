@@ -369,11 +369,10 @@
                   (drop)="onDropToSprint($event, sprint.id)">
                   @if ((sprint.tickets && sprint.tickets.length > 0) || getTicketsBySprint(sprint.id).length > 0) {
                     @for (ticket of (sprint.tickets || getTicketsBySprint(sprint.id)); track ticket.id) {
-                      <div 
+                      <div
                         class="sprint-ticket-card"
                         draggable="true"
-                        (dragstart)="onDragStart($event, ticket)"
-                        (click)="editTicket(ticket)">
+                        (dragstart)="onDragStart($event, ticket)">
                         <div class="sprint-ticket-main">
                           <div class="sprint-ticket-type">
                             <span class="ticket-type-icon" [attr.data-type]="ticket.type">
@@ -397,13 +396,11 @@
                           </div>
                         </div>
                         <div class="sprint-ticket-right">
-                            <div 
-                              class="assignee-avatar-sm" 
+                            <div
+                              class="assignee-avatar-sm"
                               [class.unassigned]="!ticket.assigned_to"
                               [style.background-color]="ticket.assigned_to ? getMemberColor(ticket.assigned_to.id) : ''"
-                              [title]="ticket.assigned_to ? (ticket.assigned_to.email || ticket.assigned_to.first_name + ' ' + ticket.assigned_to.last_name) : 'Sin asignar'"
-                              (click)="openAssignUserModal(ticket)"
-                              style="cursor: pointer;">
+                              [title]="ticket.assigned_to ? (ticket.assigned_to.email || ticket.assigned_to.first_name + ' ' + ticket.assigned_to.last_name) : 'Sin asignar'">
                               @if (ticket.assigned_to) {
                                 {{ ticket.assigned_to.avatar }}
                               } @else {
