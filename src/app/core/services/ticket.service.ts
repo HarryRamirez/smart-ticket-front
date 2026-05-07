@@ -46,8 +46,8 @@ export class TicketService {
     return this.http.patch<TicketResponse>(`${this.apiUrl}/${id}/`, ticket);
   }
 
-  deleteTicket(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}/`);
+  deleteTicket(ticketId: number, projectId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${ticketId}/project/${projectId}/delete/`);
   }
 
   generateTicketWithAi(title: string, description: string): Observable<{
@@ -90,8 +90,8 @@ export class TicketService {
     return this.http.patch<StatusResponse>(`${this.statusUrl}/${id}/`, status);
   }
 
-  deleteStatus(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.statusUrl}/${id}/`);
+  deleteStatus(projectId: number, statusId: number): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/project/${projectId}/status/${statusId}/delete/`);
   }
 
   getSprints(projectId: number): Observable<SprintResponse[]> {
@@ -111,8 +111,8 @@ export class TicketService {
     return this.http.patch<SprintResponse>(`${this.sprintUrl}/${id}/`, sprint);
   }
 
-  deleteSprint(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.sprintUrl}/${id}/`);
+  deleteSprint(sprintId: number, projectId: number): Observable<void> {
+    return this.http.delete<void>(`${this.sprintUrl}/${sprintId}/project/${projectId}/delete/`);
   }
 
   moveTicketToStatus(ticketId: number, statusId: number): Observable<TicketResponse> {

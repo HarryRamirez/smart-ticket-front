@@ -350,7 +350,8 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   deleteSprint(sprintId: number): void {
-    this.ticketService.deleteSprint(sprintId).subscribe({
+    if (!this.project) return;
+    this.ticketService.deleteSprint(sprintId, this.project.id).subscribe({
       next: () => {
         this.sprints = this.sprints.filter(s => s.id !== sprintId);
         this.tickets = this.tickets.map(t => t.sprint === sprintId ? { ...t, sprint: undefined } : t);
@@ -387,12 +388,13 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   deleteStatus(statusId: number): void {
+    if (!this.project) return;
     const ticketsInStatus = this.tickets.filter(t => t.status.id === statusId);
     if (ticketsInStatus.length > 0) {
       alert('No se puede eliminar el estado porque tiene tickets asociados');
       return;
     }
-    this.ticketService.deleteStatus(statusId).subscribe({
+    this.ticketService.deleteStatus(this.project.id, statusId).subscribe({
       next: () => {
         this.statuses = this.statuses.filter(s => s.id !== statusId);
       },
@@ -1003,7 +1005,8 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   executeDeleteTicket(ticketId: number): void {
-    this.ticketService.deleteTicket(ticketId).subscribe({
+    if (!this.project) return;
+    this.ticketService.deleteTicket(ticketId, this.project.id).subscribe({
       next: () => {
         this.tickets = this.tickets.filter(t => t.id !== ticketId);
         this.backlogTickets = this.backlogTickets.filter(t => t.id !== ticketId);
@@ -1021,7 +1024,8 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   executeDeleteSprint(sprintId: number): void {
-    this.ticketService.deleteSprint(sprintId).subscribe({
+    if (!this.project) return;
+    this.ticketService.deleteSprint(sprintId, this.project.id).subscribe({
       next: () => {
         this.sprints = this.sprints.filter(s => s.id !== sprintId);
         this.tickets = this.tickets.map(t => t.sprint === sprintId ? { ...t, sprint: undefined } : t);
@@ -1036,7 +1040,8 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   executeDeleteStatus(statusId: number): void {
-    this.ticketService.deleteStatus(statusId).subscribe({
+    if (!this.project) return;
+    this.ticketService.deleteStatus(this.project.id, statusId).subscribe({
       next: () => {
         this.statuses = this.statuses.filter(s => s.id !== statusId);
         this.statusesWithTickets = this.statusesWithTickets.filter(s => s.id !== statusId);
