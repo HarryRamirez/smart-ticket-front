@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, effect } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LayoutService } from '../../../../core/services/layout.service';
 import { ProjectService } from '../../../../core/services/project.service';
@@ -15,10 +15,17 @@ import { CommonModule } from '@angular/common';
 export class SidebarComponent implements OnInit {
   layoutService = inject(LayoutService);
   projectService = inject(ProjectService);
-  
+
   isCollapsed = this.layoutService.isSidebarCollapsed;
   recentProjects: ProjectResponse[] = [];
   isRecentProjectsOpen = true;
+
+  constructor() {
+    effect(() => {
+      this.projectService.projectsChanged();
+      this.loadRecentProjects();
+    });
+  }
 
   ngOnInit() {
     this.loadRecentProjects();

@@ -388,9 +388,11 @@
                                 <span class="priority-dot-sm" [style.background]="getPriorityColor(ticket.priority)"></span>
                                 {{ticket.priority}}
                               </span>
+                              @if(ticket.status != null) {
                               <span class="status-tag-sm" [style.background]=" 'var(--primary-bg)' " [style.color]=" 'var(--primary)' ">
                                 {{ ticket.status }}
                               </span>
+                              }
                             </div>
                           </div>
                         </div>

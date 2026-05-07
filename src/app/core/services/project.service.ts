@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import {
   ProjectResponse,
@@ -31,6 +31,8 @@ export class ProjectService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/project`;
   private apiUrlTicket = `${environment.apiUrl}/ticket`;
+
+  projectsChanged = signal<number>(0);
 
   getProjects(params?: {
     page?: number;

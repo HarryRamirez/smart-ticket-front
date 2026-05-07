@@ -68,11 +68,12 @@ export class ProjectsComponent implements OnInit {
 
   executeDelete(): void {
     if (!this.showDeleteConfirm) return;
-    
+
     const projectId = this.showDeleteConfirm;
     this.projectService.deleteProject(projectId).subscribe({
       next: () => {
         this.projects = this.projects.filter(p => p.id !== projectId);
+        this.projectService.projectsChanged.set(Date.now());
         this.showToast('Proyecto eliminado correctamente', 'success');
       },
       error: (err) => {
