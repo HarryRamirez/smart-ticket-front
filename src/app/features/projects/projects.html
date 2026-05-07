@@ -84,7 +84,7 @@
   @if (showDeleteConfirm) {
     <div class="modal-backdrop" (click)="cancelDelete()"></div>
     <div class="modal-dialog-custom">
-      <div class="modal-content-custom" style="max-width: 400px;" (click)="$event.stopPropagation()">
+      <div class="modal-content-custom" (click)="$event.stopPropagation()">
         <div class="modal-header-custom">
           <h5 class="modal-title">Confirmar Eliminación</h5>
           <button type="button" class="btn-close" (click)="cancelDelete()">
@@ -94,7 +94,7 @@
         <div class="modal-body p-4">
           <p>¿Estás seguro de que deseas eliminar este proyecto? Esta acción no se puede deshacer.</p>
         </div>
-        <div class="p-4 d-flex gap-3 justify-content-end" style="border-top: 1px solid #dee2e6;">
+        <div class="modal-footer-custom">
           <button class="btn btn-secondary" (click)="cancelDelete()">Cancelar</button>
           <button class="btn btn-danger" (click)="executeDelete()">Eliminar</button>
         </div>
