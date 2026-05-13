@@ -51,7 +51,7 @@
                   </button>
                   @if (openDropdownId === 'project-' + project.id) {
                     <div class="dropdown-menu-action">
-                      <button class="dropdown-item-action" [routerLink]="['/projects', project.id]" (click)="closeDropdowns()">
+                      <button class="dropdown-item-action" (click)="openEditModal(project)">
                         <i class="bi bi-pencil"></i>
                         Actualizar
                       </button>
@@ -97,6 +97,39 @@
         <div class="modal-footer-custom">
           <button class="btn btn-secondary" (click)="cancelDelete()">Cancelar</button>
           <button class="btn btn-danger" (click)="executeDelete()">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Edit Project Modal -->
+  @if (showEditModal) {
+    <div class="modal-backdrop" (click)="closeEditModal()"></div>
+    <div class="modal-dialog-custom">
+      <div class="modal-content-custom" (click)="$event.stopPropagation()">
+        <div class="modal-header-custom">
+          <h5 class="modal-title">Actualizar Proyecto</h5>
+          <button type="button" class="btn-close" (click)="closeEditModal()">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Nombre del Proyecto</label>
+            <input type="text" class="form-control" [(ngModel)]="editProjectData.name" placeholder="Ej: Proyecto Alpha">
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Key</label>
+            <input type="text" class="form-control" [(ngModel)]="editProjectData.key" placeholder="Ej: PROJ" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Descripción</label>
+            <textarea class="form-control" rows="3" [(ngModel)]="editProjectData.description" placeholder="Describe el proyecto..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer-custom">
+          <button class="btn btn-secondary" (click)="closeEditModal()">Cancelar</button>
+          <button class="btn btn-primary" (click)="saveProject()" [disabled]="!editProjectData.name || !editProjectData.key">Guardar Cambios</button>
         </div>
       </div>
     </div>
