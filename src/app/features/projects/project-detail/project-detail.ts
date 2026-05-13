@@ -23,6 +23,8 @@ import {
 } from '../../../core/models/entities';
 import { TicketCreateComponent } from '../../tickets/ticket-create/ticket-create';
 import { forkJoin } from 'rxjs';
+import { ActivitySocketService } from '../../../core/services/activity-socket.service';
+
 
 @Component({
   selector: 'app-project-detail',
@@ -114,6 +116,7 @@ export class ProjectDetailComponent implements OnInit {
   
 
   currentUserEmail = '';
+  currentUsername!: string;
   currentUserId: number | null = null;
   currentUserRole: 'admin' | 'developer' | 'qa' | 'viewer' | null = null;
 
@@ -121,7 +124,9 @@ export class ProjectDetailComponent implements OnInit {
   showDeleteConfirm: { type: 'ticket' | 'sprint' | 'status', id: number } | null = null;
 
   
-
+  constructor(
+    private activitySocketService: ActivitySocketService
+  ) {}
   
 
   ngOnInit(): void {
@@ -129,11 +134,37 @@ export class ProjectDetailComponent implements OnInit {
       const id = params.get('id');
       if (id) {
         this.loadProjectData(+id);
+        this.activitySocketService.connect(+id);
+
+        this.activitySocketService.activitySubject
+        .subscribe({
+            next: (activity) => {
+              if(activity.user === this.currentUsername){
+                activity.message = activity.message.replace(
+                  activity.user,
+                  'Tú'
+                );
+
+                activity.user = 'Tú';
+              }
+
+              console.log(activity);
+
+              this.recentActivity.unshift(activity);
+
+            }
+          });
       }
     });
 
     this.loadCurrentUser();
   }
+
+  ngOnDestroy(): void {
+   this.activitySocketService.disconnect();
+  }
+
+
 
   loadCurrentUser(): void {
     const userStr = localStorage.getItem('user_data');
@@ -141,6 +172,7 @@ export class ProjectDetailComponent implements OnInit {
       const user = JSON.parse(userStr);
       this.currentUserEmail = user.email;
       this.currentUserId = user.id;
+      this.currentUsername = user.username;
     }
   }
 

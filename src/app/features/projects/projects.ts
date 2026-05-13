@@ -4,6 +4,7 @@ import { RouterLink, Router } from '@angular/router';
 import { ProjectService } from '../../core/services/project.service';
 import { ProjectResponse } from '../../core/models/entities';
 
+
 @Component({
   selector: 'app-projects',
   standalone: true,
@@ -22,9 +23,12 @@ export class ProjectsComponent implements OnInit {
   toastMessage = '';
   toastType: 'success' | 'error' | '' = '';
 
+
+
   ngOnInit() {
     this.loadProjects();
   }
+
 
   loadProjects() {
     this.isLoading = true;
