@@ -414,9 +414,21 @@ export class ProjectDetailComponent implements OnInit {
     this.ticketService.updateStatus(status.id, { name: newName }).subscribe({
       next: (updated) => {
         status.name = updated.name;
+        this.showStatusModal = false;
+        this.editingStatus = null;
+        this.newStatus = { name: '', order: 0 };
+        this.showToast('Estado actualizado correctamente', 'success');
       },
-      error: (err) => console.error('Error updating status:', err)
+      error: (err) => {
+        console.error('Error updating status:', err);
+        this.showToast('Error al actualizar el estado', 'error');
+      }
     });
+  }
+
+  saveStatusFromModal(): void {
+    if (!this.editingStatus || !this.newStatus.name) return;
+    this.updateStatusName(this.editingStatus, this.newStatus.name);
   }
 
   deleteStatus(statusId: number): void {

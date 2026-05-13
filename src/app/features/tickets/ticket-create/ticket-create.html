@@ -91,15 +91,17 @@
             </div>
 
             <!-- Status -->
-            <div class="col-md-4">
-              <label class="form-label fw-semibold">Estado <span class="text-danger">*</span></label>
-              <select formControlName="status" class="form-select" [class.is-invalid]="isFieldInvalid('status')">
-                <option value="">Seleccionar...</option>
-                @for (s of statuses; track s.id) {
-                  <option [value]="s.id">{{ s.name }}</option>
-                }
-              </select>
-            </div>
+            @if (!hideStatusSelector) {
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Estado <span class="text-danger">*</span></label>
+                <select formControlName="status" class="form-select" [class.is-invalid]="isFieldInvalid('status')">
+                  <option value="">Seleccionar...</option>
+                  @for (s of statuses; track s.id) {
+                    <option [value]="s.id">{{ s.name }}</option>
+                  }
+                </select>
+              </div>
+            }
           </div>
 
           <hr class="my-4">

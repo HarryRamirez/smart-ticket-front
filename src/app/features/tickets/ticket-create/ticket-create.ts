@@ -18,6 +18,7 @@ export class TicketCreateComponent implements OnChanges {
   @Input() statuses: StatusResponse[] = [];
   @Input() initialStatusId: number | null = null;
   @Input() editingTicket: TicketResponse | null = null;
+  @Input() hideStatusSelector: boolean = false;
   @Output() ticketCreated = new EventEmitter<TicketResponse>();
   @Output() ticketUpdated = new EventEmitter<TicketResponse>();
   @Output() close = new EventEmitter<void>();
