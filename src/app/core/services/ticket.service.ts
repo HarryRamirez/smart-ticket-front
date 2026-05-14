@@ -42,8 +42,8 @@ export class TicketService {
     return this.http.post<TicketResponse>(`${this.apiUrl}/project/${projectId}/create/`, ticket);
   }
 
-  updateTicket(id: number, ticket: UpdateTicket): Observable<TicketResponse> {
-    return this.http.patch<TicketResponse>(`${this.apiUrl}/${id}/`, ticket);
+  updateTicket(ticketId: number, projectId: number, ticket: UpdateTicket): Observable<TicketResponse> {
+    return this.http.patch<TicketResponse>(`${this.apiUrl}/${ticketId}/project/${projectId}/update/`, ticket);
   }
 
   deleteTicket(ticketId: number, projectId: number): Observable<void> {
@@ -86,8 +86,8 @@ export class TicketService {
     return this.http.post<StatusResponse>(`${this.statusUrl}/`, status);
   }
 
-  updateStatus(id: number, status: Partial<CreateStatus>): Observable<StatusResponse> {
-    return this.http.patch<StatusResponse>(`${this.statusUrl}/${id}/`, status);
+  updateStatus(projectId: number, statusId: number, status: { name: string }): Observable<StatusResponse> {
+    return this.http.patch<StatusResponse>(`${environment.apiUrl}/project/${projectId}/status/${statusId}/update/`, status);
   }
 
   deleteStatus(projectId: number, statusId: number): Observable<void> {
@@ -107,8 +107,13 @@ export class TicketService {
     return this.http.post<SprintResponse>(`${this.sprintUrl}/project/${projectId}/create/`, sprint);
   }
 
-  updateSprint(id: number, sprint: Partial<CreateSprint>): Observable<SprintResponse> {
-    return this.http.patch<SprintResponse>(`${this.sprintUrl}/${id}/`, sprint);
+  updateSprint(sprintId: number, projectId: number, sprint: {
+    name: string;
+    start_date: string;
+    end_date: string;
+    status: 'planificado' | 'activo' | 'completado';
+  }): Observable<SprintResponse> {
+    return this.http.patch<SprintResponse>(`${this.sprintUrl}/${sprintId}/project/${projectId}/update/`, sprint);
   }
 
   deleteSprint(sprintId: number, projectId: number): Observable<void> {

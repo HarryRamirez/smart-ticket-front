@@ -411,7 +411,8 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   updateStatusName(status: StatusResponse, newName: string): void {
-    this.ticketService.updateStatus(status.id, { name: newName }).subscribe({
+    if (!this.project) return;
+    this.ticketService.updateStatus(this.project.id, status.id, { name: newName }).subscribe({
       next: (updated) => {
         status.name = updated.name;
         this.showStatusModal = false;

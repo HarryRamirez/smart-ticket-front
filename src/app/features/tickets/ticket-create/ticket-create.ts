@@ -83,7 +83,7 @@ export class TicketCreateComponent implements OnChanges {
       const formValue = this.ticketForm.value;
       
       if (this.editingTicket) {
-        this.ticketService.updateTicket(this.editingTicket.id, formValue).subscribe({
+        this.ticketService.updateTicket(this.editingTicket.id, this.projectId, formValue).subscribe({
           next: (ticket) => {
             this.ticketUpdated.emit(ticket);
             this.isLoading = false;
