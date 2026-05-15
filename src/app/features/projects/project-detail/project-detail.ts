@@ -352,6 +352,11 @@ export class ProjectDetailComponent implements OnInit {
   createSprint(): void {
     if (!this.project || !this.newSprint.name) return;
 
+    if (this.editingSprint) {
+      this.updateSprint();
+      return;
+    }
+
     if (this.newSprint.status === 'activo') {
       const activeSprint = this.sprints.find(s => s.status === 'activo');
       if (activeSprint) {
@@ -377,6 +382,31 @@ export class ProjectDetailComponent implements OnInit {
       error: (err) => {
         console.error('Error creating sprint:', err);
         this.showToast('Error al crear el sprint', 'error');
+      }
+    });
+  }
+
+  updateSprint(): void {
+    if (!this.project || !this.editingSprint || !this.newSprint.name) return;
+
+    const sprintData = {
+      name: this.newSprint.name,
+      start_date: this.newSprint.start_date,
+      end_date: this.newSprint.end_date,
+      status: this.newSprint.status
+    };
+
+    this.ticketService.updateSprint(this.editingSprint.id, this.project.id, sprintData).subscribe({
+      next: (updatedSprint) => {
+        this.sprints = this.sprints.map(s => s.id === updatedSprint.id ? updatedSprint : s);
+        this.showSprintModal = false;
+        this.editingSprint = null;
+        this.resetNewSprint();
+        this.showToast('Sprint actualizado correctamente', 'success');
+      },
+      error: (err) => {
+        console.error('Error updating sprint:', err);
+        this.showToast('Error al actualizar el sprint', 'error');
       }
     });
   }
