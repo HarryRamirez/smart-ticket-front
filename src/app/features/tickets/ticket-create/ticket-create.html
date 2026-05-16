@@ -39,22 +39,26 @@
             @if (isFieldInvalid('description')) {
               <div class="invalid-feedback">La descripción es requerida (mín. 10 caracteres).</div>
             }
+            @if (!editingTicket) {
             <small class="text-muted d-block mt-1">Agrega la key (si ya la tienes), un título claro y descriptivo. Sé detallado en la descripción para que la IA genere mejores sugerencias para los campos restantes.</small>
+            }
           </div>
 
           <!-- AI Button -->
-          <div class="mb-4 text-end">
-            <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 d-inline-flex align-items-center" 
-                    (click)="generateWithAi()" [disabled]="isAiGenerating">
-              @if (isAiGenerating) {
-                <span class="spinner-border spinner-border-sm me-2"></span>
-                Analizando con IA...
-              } @else {
-                <i class="bi bi-robot me-2"></i>
-                Generar con IA
-              }
-            </button>
-          </div>
+          @if (!editingTicket) {
+            <div class="mb-4 text-end">
+              <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3 d-inline-flex align-items-center" 
+                      (click)="generateWithAi()" [disabled]="isAiGenerating">
+                @if (isAiGenerating) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  Analizando con IA...
+                } @else {
+                  <i class="bi bi-robot me-2"></i>
+                  Generar con IA
+                }
+              </button>
+            </div>
+          }
 
           <div class="row g-4">
             <!-- Category -->
