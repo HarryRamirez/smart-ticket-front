@@ -185,7 +185,6 @@ export interface TicketResponse {
   status: StatusResponse;
   priority: string;
   type: string;
-  reporter: UserResponse;
   assigned_to?: UserResponse;
   sprint?: number;
   labels: LabelResponse[];
