@@ -25,7 +25,7 @@
     [hideStatusSelector]="!!initialStatusForNewTicket && initialStatusForNewTicket > 0"
     (ticketCreated)="onTicketCreated($event)"
     (ticketUpdated)="onTicketUpdated($event)"
-    (close)="toggleTicketModal()">
+    (close)="showTicketModal = false">
   </app-ticket-create>
 
   <!-- Sprint Create/Edit Modal -->
