@@ -104,6 +104,10 @@ export class ProjectService {
     return this.http.get<DashboardCards>(`${this.apiUrl}/dashboard/cards`);
   }
 
+  getActiveProjects(): Observable<ProjectResponse[]> {
+    return this.http.get<ProjectResponse[]>(`${this.apiUrl}/active/`);
+  }
+
 
   createStatusByProject(projectId: number, name: string): Observable<StatusResponse> {
     return this.http.post<StatusResponse>(`${this.apiUrl}/${projectId}/status/`, { name });

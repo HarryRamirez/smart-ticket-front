@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProjectService } from '../../core/services/project.service';
 import { TicketService } from '../../core/services/ticket.service';
-import { ProjectResponse, TicketResponse, DashboardCards } from '../../core/models/entities';
+import { ProjectResponse, TicketResponse, DashboardCards, UserResponse } from '../../core/models/entities';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -18,6 +18,7 @@ export class DashboardComponent implements OnInit {
   private ticketService = inject(TicketService);
 
   projects: ProjectResponse[] = [];
+  activeProjects: ProjectResponse[] = [];
   recentTickets: TicketResponse[] = [];
   allTickets: TicketResponse[] = [];
   showActivityModal = false;
@@ -47,16 +48,20 @@ export class DashboardComponent implements OnInit {
 
   loadDashboardData() {
     this.isLoading = true;
-    this.projectService.getDashboardCards().subscribe({
-      next: (cards) => {
-        this.stats.project_count = cards.project_count;
-        this.stats.my_tickets_count = cards.my_tickets_count;
-        this.stats.tickets_count = cards.tickets_count;
-        this.stats.unassigned_tickets_count = cards.unassigned_tickets_count;
+    forkJoin({
+      cards: this.projectService.getDashboardCards(),
+      activeProjects: this.projectService.getActiveProjects()
+    }).subscribe({
+      next: (data) => {
+        this.stats.project_count = data.cards.project_count;
+        this.stats.my_tickets_count = data.cards.my_tickets_count;
+        this.stats.tickets_count = data.cards.tickets_count;
+        this.stats.unassigned_tickets_count = data.cards.unassigned_tickets_count;
+        this.activeProjects = data.activeProjects;
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error loading dashboard cards', err);
+        console.error('Error loading dashboard data', err);
         this.isLoading = false;
       }
     });
@@ -106,5 +111,18 @@ export class DashboardComponent implements OnInit {
   closeActivityModal() {
     this.showActivityModal = false;
     document.body.style.overflow = '';
+  }
+
+  getMemberColor(userId: number): string {
+    const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#14b8a6', '#f59e0b', '#ef4444', '#22c55e', '#0ea5e9'];
+    return colors[userId % colors.length];
+  }
+
+  getInitials(user: UserResponse | any): string {
+    if (!user) return '';
+    if (user.avatar) return user.avatar;
+    const first = user.first_name || user.firstName || '';
+    const last = user.last_name || user.lastName || '';
+    return (first[0] || '') + (last[0] || '');
   }
 }

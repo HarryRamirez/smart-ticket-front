@@ -73,18 +73,29 @@
                 </tr>
               </thead>
               <tbody>
-                @for (project of projects; track project.id) {
+                @for (project of activeProjects; track project.id) {
                   <tr class="cursor-pointer" [routerLink]="['/projects', project.id]">
                     <td class="ps-4">
                       <span class="badge" style="background: var(--primary-bg); color: var(--primary);">{{ project.key }}</span>
                     </td>
                     <td>
                       <div class="fw-semibold text-main">{{ project.name }}</div>
-                      <div class="text-muted-custom smaller">{{ project.created_by }}</div>
                     </td>
                     <td>
                       <div class="avatar-group d-flex">
-                        <div class="avatar-xs-circle text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="background: var(--ink-tertiary); font-size: 8px;">+{{ project.members_count }}</div>
+                        @for (member of project.members.slice(0, 3); track member.id) {
+                          <div class="d-flex align-items-center justify-content-center rounded-circle text-white fw-semibold me-1" 
+                               [style.background-color]="getMemberColor(member.id)"
+                               style="width: 32px; height: 32px; font-size: 11px;">
+                            {{ getInitials(member) }}
+                          </div>
+                        }
+                        @if (project.members.length > 3) {
+                          <div class="d-flex align-items-center justify-content-center rounded-circle text-white fw-semibold" 
+                               style="background: var(--ink-tertiary); width: 32px; height: 32px; font-size: 10px;">
+                            +{{ project.members.length - 3 }}
+                          </div>
+                        }
                       </div>
                     </td>
                     <td class="pe-4 text-end">
