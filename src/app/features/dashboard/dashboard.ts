@@ -50,7 +50,8 @@ export class DashboardComponent implements OnInit {
     this.isLoading = true;
     forkJoin({
       cards: this.projectService.getDashboardCards(),
-      activeProjects: this.projectService.getActiveProjects()
+      activeProjects: this.projectService.getActiveProjects(),
+      recentTickets: this.projectService.getDashboardRecentTickets()
     }).subscribe({
       next: (data) => {
         this.stats.project_count = data.cards.project_count;
@@ -58,6 +59,8 @@ export class DashboardComponent implements OnInit {
         this.stats.tickets_count = data.cards.tickets_count;
         this.stats.unassigned_tickets_count = data.cards.unassigned_tickets_count;
         this.activeProjects = data.activeProjects;
+        this.recentTickets = data.recentTickets;
+        this.allTickets = data.recentTickets;
         this.isLoading = false;
       },
       error: (err) => {
@@ -80,20 +83,27 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  getStatusBadgeClass(statusName: string): string {
-    switch (statusName.toLowerCase()) {
-      case 'done':
-      case 'completado':
-        return 'bg-success text-white';
-      case 'in progress':
-      case 'en progreso':
-        return 'bg-primary text-white';
-      case 'to do':
-      case 'por hacer':
-        return 'bg-secondary text-white';
-      default:
-        return 'bg-light text-dark';
-    }
+  getStatusName(status: any): string {
+    if (!status) return '';
+    if (typeof status === 'object' && status.name) return status.name;
+    return String(status);
+  }
+
+  getRelativeTime(dateString: string): string {
+    if (!dateString) return '';
+    const now = new Date();
+    const date = new Date(dateString);
+    const diffMs = now.getTime() - date.getTime();
+    const diffSec = Math.floor(diffMs / 1000);
+    const diffMin = Math.floor(diffSec / 60);
+    const diffHour = Math.floor(diffMin / 60);
+    const diffDay = Math.floor(diffHour / 24);
+
+    if (diffSec < 60) return 'Ahora';
+    if (diffMin < 60) return `Hace ${diffMin} min`;
+    if (diffHour < 24) return `Hace ${diffHour} h`;
+    if (diffDay < 7) return `Hace ${diffDay} día${diffDay > 1 ? 's' : ''}`;
+    return date.toLocaleDateString('es-ES');
   }
 
   @HostListener('document:keydown.escape')

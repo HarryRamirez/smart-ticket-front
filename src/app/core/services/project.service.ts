@@ -12,7 +12,8 @@ import {
   DueTickets,
   ProjectMemberWithUser,
   DashboardCards,
-  StatusResponse
+  StatusResponse,
+  TicketResponse
 } from '../models/entities';
 import { environment } from '../../../environments/environment';
 import { Observable, of } from 'rxjs';
@@ -108,6 +109,9 @@ export class ProjectService {
     return this.http.get<ProjectResponse[]>(`${this.apiUrl}/active/`);
   }
 
+  getDashboardRecentTickets(): Observable<TicketResponse[]> {
+    return this.http.get<TicketResponse[]>(`${this.apiUrl}/dashboard_recent_tickets/`);
+  }
 
   createStatusByProject(projectId: number, name: string): Observable<StatusResponse> {
     return this.http.post<StatusResponse>(`${this.apiUrl}/${projectId}/status/`, { name });
